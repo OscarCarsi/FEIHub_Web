@@ -1,9 +1,13 @@
 ﻿@page
 @model IndexModel
+@using FeiHub.Services;
 @{
     ViewData["Title"] = "Home page";
 }
-
+@{
+    UsersAPIServices usersAPIServices = new UsersAPIServices();
+    var user = await usersAPIServices.GetUser("Carsi");
+}
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
