@@ -5,7 +5,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FeiHub.Resources
+namespace FEIHub_Web.wwwroot.Resources
 {
     public class Encryptor
     {
