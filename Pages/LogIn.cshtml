@@ -1,0 +1,85 @@
+@page
+
+@{
+    Layout=null;
+}
+
+
+<!doctype html>
+<html lang="en" data-bs-theme="auto">
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Hugo 0.111.3">
+    <title>Signin Template · Bootstrap v5.3</title>
+    
+    
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/CursosUI.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
+
+    <meta name="theme-color" content="#712cf9">
+    <script>
+    function togglePasswordVisibility() {
+        var passwordInput = document.getElementById("password");
+        var passwordToggleIcon = document.getElementById("passwordToggleIcon");
+
+        if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+            passwordToggleIcon.classList.remove("fa-eye");
+            passwordToggleIcon.classList.add("fa-eye-slash");
+        } else {
+            passwordInput.type = "password";
+            passwordToggleIcon.classList.remove("fa-eye-slash");
+            passwordToggleIcon.classList.add("fa-eye");
+        }
+    }
+    </script>
+
+        
+  </head>
+  <body style="margin-top:50px">
+    
+
+    <main class="container">    
+    <form class="row justify-content-center" >
+        <div class="row justify-content-start">
+            <div class="col-md-6">
+                <img class="img-fluid" src="/Resources/FEIHub_Logo.png" style="max-height: 754px; width: 35%; position: absolute; top: 0; left: 0;" />
+            </div>
+        </div>    
+        <div class="col align-self-end">
+            
+            <h1 class="text-end" style="margin-top: 50px; margin-bottom: 50px; margin-right: 10%;">Bienvenido a FEIHub</h1>
+            
+            <div class="row justify-content-end">
+                <div class="col-6 align-self-end">
+                    <div class="form-floating">
+                        <input type="text" name="login" class="form-control" id="login" placeholder="name@example.com">
+                        <label for="floatingInput">Usuario</label>
+                    </div>
+                    <br>
+                    <div class="form-floating">
+                        <input type="password" name="password" class="form-control" id="password" placeholder="Password">
+                        <label for="floatingPassword">Contraseña</label>
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button" onclick="togglePasswordVisibility()">
+                            <i id="passwordToggleIcon" class="fa fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <br>
+                    <button class="w-100 btn btn-lg btn-primary" type="submit" style="margin-bottom: 50px; margin-right: 10%;">Iniciar Sesión</button>  
+                </div>
+            </div>        
+        </div>
+    </form>
+    </main>
+    
+  </body>
+</html>
