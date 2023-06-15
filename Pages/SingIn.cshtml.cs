@@ -8,7 +8,7 @@ using FEIHub_Web.wwwroot.Resources;
 
 namespace FEIHub_Web.Pages;
 
-public class LoginModel : PageModel
+public class SingInModel : PageModel
 {
     UsersAPIServices usersAPIServices = new UsersAPIServices();
     SingletonUser user = SingletonUser.Instance;

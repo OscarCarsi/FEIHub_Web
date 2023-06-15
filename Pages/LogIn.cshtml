@@ -1,5 +1,5 @@
 @page
-
+@model FEIHub_Web.Pages.LoginModel;
 @{
     Layout=null;
 }
@@ -20,7 +20,7 @@
 
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/CursosUI.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/FEIHub_Web.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
 
     <meta name="theme-color" content="#712cf9">
@@ -47,7 +47,7 @@
     
 
     <main class="container">    
-    <form class="row justify-content-center" >
+    <form class="row justify-content-center" asp-page-handler="Login" method="POST" asp-page="./Login">
         <div class="row justify-content-start">
             <div class="col-md-6">
                 <img class="img-fluid" src="/Resources/FEIHub_Logo.png" style="max-height: 754px; width: 35%; position: absolute; top: 0; left: 0;" />
@@ -60,8 +60,8 @@
             <div class="row justify-content-end">
                 <div class="col-6 align-self-end">
                     <div class="form-floating">
-                        <input type="text" name="login" class="form-control" id="login" placeholder="name@example.com">
-                        <label for="floatingInput">Usuario</label>
+                        <input type="text" name="username" class="form-control" id="username" placeholder="Username">
+                        <label for="floatingInput">Nombre de usuario</label>
                     </div>
                     <br>
                     <div class="form-floating">
@@ -74,11 +74,60 @@
                         </div>
                     </div>
                     <br>
-                    <button class="w-100 btn btn-lg btn-primary" type="submit" style="margin-bottom: 50px; margin-right: 10%;">Iniciar Sesión</button>  
+                    <style>
+                        .btn-custom-login {
+                            background-color: #14a3c8; /
+                            color: #000000; 
+                            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
+                        }
+                        .btn-custom-singin {
+                            background-color: #feffffef; /
+                            color: #000000;
+                            border: 1px solid #000000; 
+                            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
+                        }
+                        .alert-fade {
+                            opacity: 1;
+                            transition: opacity 0.5s ease-in-out;
+                        }
+                        .alert-hide {
+                            opacity: 0;
+                            transition: opacity 0.5s ease-in-out;
+                        }
+                    </style>
+                    <button class="w-100 btn btn-lg btn-custom-login" type="submit" style="margin-bottom: 50px; margin-right: 10%;">Iniciar Sesión</button>  
+                    @if (Model.Message == "Verifica tus credenciales" || Model.Message == "No puedes dejar campos vacíos" )
+                    {
+                        <div id="alertMessage" class="alert alert-danger alert-fade" role="alert">@Model.Message</div>
+                        <script>
+                            setTimeout(function() {
+                                var alertMessage = document.getElementById("alertMessage");
+                                alertMessage.classList.add("alert-hide");
+                            }, 2000); 
+                        </script>
+                    }
+                    @if (Model.Message == null )
+                    {
+                        
+                    }
+                    else{
+                        <div id="sucessMessage" class="alert alert-success mt-3 alert-fade">@Model.Message</div>
+                        <script>
+                            setTimeout(function() {
+                                var alertMessage = document.getElementById("sucessMessage");
+                                alertMessage.classList.add("alert-hide");
+                            }, 2000); 
+                        </script>
+                    }
+                    <br>
+                    
                 </div>
             </div>        
         </div>
     </form>
+    <div class="row justify-content-end">
+        <label class="col-md-6 text-end" style="margin-bottom: 50px; margin-right: 17%;">¿Aún no tienes cuenta? <a asp-page="SingIn">Regístrate</a></label>
+    </div>
     </main>
     
   </body>
