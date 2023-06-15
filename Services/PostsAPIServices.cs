@@ -12,7 +12,7 @@ namespace FeiHub.Services
         public PostsAPIServices()
         {
             httpClient = new HttpClient();
-            httpClient.BaseAddress = new Uri("http://192.168.56.1:8083/apipostsfeihub");
+            httpClient.BaseAddress = new Uri("http://localhost:8083/apipostsfeihub");
         }
         public async Task<List<Posts>> GetPostsWithoutFollowings(string target)
         {
@@ -335,7 +335,7 @@ namespace FeiHub.Services
                 return postList;
             }
         }
-        
+
         public async Task<HttpResponseMessage> DeletePost(Posts postToDelete)
         {
             try
@@ -446,7 +446,7 @@ namespace FeiHub.Services
                 string jsonResponse = await response.Content.ReadAsStringAsync();
                 if (response.IsSuccessStatusCode)
                 {
-                    JObject jsonObject = JObject.Parse(jsonResponse); 
+                    JObject jsonObject = JObject.Parse(jsonResponse);
                     JArray chatFound = jsonObject.GetValue("chat") as JArray;
                     if (chatFound != null)
                     {
@@ -557,7 +557,7 @@ namespace FeiHub.Services
             }
             return chat;
         }
-                    
+
         public async Task<Posts> DeleteComment(string commentId, string idPost)
         {
             Posts post = new Posts();

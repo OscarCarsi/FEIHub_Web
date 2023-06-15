@@ -20,7 +20,7 @@ namespace FeiHub.Services
         public UsersAPIServices()
         {
             httpClient = new HttpClient();
-            httpClient.BaseAddress = new Uri("http://192.168.56.1:8083/apiusersfeihub");
+            httpClient.BaseAddress = new Uri("http://localhost:8083/apiusersfeihub");
         }
         public async Task<UserCredentials> GetUserCredentials(string username, string password)
         {
@@ -92,7 +92,7 @@ namespace FeiHub.Services
                 string jsonResponse = await response.Content.ReadAsStringAsync();
                 userObtained = JsonConvert.DeserializeObject<User>(jsonResponse);
                 return userObtained;
-            
+
         }
         public async Task<string> GetExistingUser(string email)
         {
@@ -111,7 +111,7 @@ namespace FeiHub.Services
             {
                 return null;
             }
-            
+
         }
         public async Task<List<User>> GetListUsersFollowing(string username)
         {
@@ -144,7 +144,7 @@ namespace FeiHub.Services
                         }
                     }
 
-                    
+
                 }
                 if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized) {
                     User user = new User();
