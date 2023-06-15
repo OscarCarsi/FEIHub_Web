@@ -1,4 +1,10 @@
-﻿<!DOCTYPE html>
+﻿@using FeiHub.Models;
+@{
+    if (SingletonUser.Instance.Token == null) {
+        Context.Response.Redirect("/Login");
+    }
+}
+<!DOCTYPE html>
 <html lang="en"></html>
 <head>
     <meta charset="utf-8" />
