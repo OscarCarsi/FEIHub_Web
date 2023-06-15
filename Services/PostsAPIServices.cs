@@ -12,7 +12,7 @@ namespace FeiHub.Services
         public PostsAPIServices()
         {
             httpClient = new HttpClient();
-            httpClient.BaseAddress = new Uri("http://192.168.56.1:8083/apipostsfeihub");
+            httpClient.BaseAddress = new Uri("http://localhost:8083/apipostsfeihub");
         }
         public async Task<List<Posts>> GetPostsWithoutFollowings(string target)
         {
