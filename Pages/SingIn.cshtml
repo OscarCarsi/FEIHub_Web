@@ -21,12 +21,10 @@
     <style>
         #studentForm {
             max-height: 700px;
-            overflow-y: auto;
         }
 
         #academicForm {
             max-height: 700px;
-            overflow-y: auto;
             display: none;
         }
         .btn-custom {
@@ -42,11 +40,29 @@
             opacity: 0;
             transition: opacity 0.5s ease-in-out;
         }
+        .custom-label {
+            background-color: #063970;
+            color : white;
+        }
     </style>
     <script>
-        function togglePasswordVisibility() {
-            var passwordInput = document.getElementById("password");
-            var passwordToggleIcon = document.getElementById("passwordToggleIcon");
+        function togglePasswordVisibilityStudent() {
+            var passwordInput = document.getElementById("studentPassword");
+            var passwordToggleIcon = document.getElementById("passwordToggleIconStudent");
+
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                passwordToggleIcon.classList.remove("fa-eye");
+                passwordToggleIcon.classList.add("fa-eye-slash");
+            } else {
+                passwordInput.type = "password";
+                passwordToggleIcon.classList.remove("fa-eye-slash");
+                passwordToggleIcon.classList.add("fa-eye");
+            }
+        }
+        function togglePasswordVisibilityAcademic() {
+            var passwordInput = document.getElementById("academicPassword");
+            var passwordToggleIcon = document.getElementById("passwordToggleIconAcademic");
 
             if (passwordInput.type === "password") {
                 passwordInput.type = "text";
@@ -60,52 +76,53 @@
         }
         var activeButton = "ACADEMIC";
 
-function toggleRegisterForm() {
-  var studentForm = document.getElementById("studentForm");
-  var academicForm = document.getElementById("academicForm");
-  var studentButton = document.getElementById("studentButton");
-  var academicButton = document.getElementById("academicButton");
+        function toggleRegisterForm() {
+        var studentForm = document.getElementById("studentForm");
+        var academicForm = document.getElementById("academicForm");
+        var studentButton = document.getElementById("studentButton");
+        var academicButton = document.getElementById("academicButton");
 
-  if (studentButton.classList.contains("active")) {
-    studentForm.style.display = "none";
-    academicForm.style.display = "block";
-    academicButton.classList.add("active");
-    studentButton.classList.remove("active");
-    studentButton.disabled = false;
-    academicButton.disabled = true;
-    activeButton = "ACADEMIC";
-    var param1Input = document.getElementById("activeButton");
-    param1Input.value = activeButton;
-  } else {
-    studentForm.style.display = "block";
-    academicForm.style.display = "none";
-    studentButton.classList.add("active");
-    academicButton.classList.remove("active");
-    studentButton.disabled = true;
-    academicButton.disabled = false;
-    activeButton = "STUDENT";
-    var param1Input = document.getElementById("activeButton");
-    param1Input.value = activeButton;
-  }
-}
+        if (studentButton.classList.contains("active")) {
+            studentForm.style.display = "none";
+            academicForm.style.display = "block";
+            academicButton.classList.add("active");
+            studentButton.classList.remove("active");
+            studentButton.disabled = false;
+            academicButton.disabled = true;
+            activeButton = "ACADEMIC";
+            var param1Input = document.getElementById("activeButton");
+            param1Input.value = activeButton;
+        } else {
+            studentForm.style.display = "block";
+            academicForm.style.display = "none";
+            studentButton.classList.add("active");
+            academicButton.classList.remove("active");
+            studentButton.disabled = true;
+            academicButton.disabled = false;
+            activeButton = "STUDENT";
+            var param1Input = document.getElementById("activeButton");
+            param1Input.value = activeButton;
+        }
+        }
     </script>
 </head>
-<body style="margin-top: -40px">
+<body style="margin-top: 80px">
     <main class="container">
         <form class="row justify-content-end" asp-page-handler="Singin" method="POST" asp-page="./Singin">
             <div class="col-md-6">
                 <input type="text" name="activeButton" id="activeButton" value="STUDENT" hidden />
-                <img class="img-fluid" src="/Resources/FEIHub_Logo.png" style="height: 810px; width: 40%; position: absolute; top: 0; left: 0;" />
+                <img class="img-fluid" src="/Resources/FEIHub_Logo.png" style="height: 1000px; width: 40%; position: absolute; top: 0; left: 0;" />
             </div>
             <div class="col-lg-6 align-self-end">
-                <h1 class="text-end" style="margin-top: 50px; margin-bottom: 10px; margin-right: 10%;">Bienvenido a FEIHub</h1>
+                <p class="text-center custom-label" style="font-size: 25px; margin-top: -80px;margin-right: -90px;">Universidad Veracruzana</p>
+                <h1 class="text-center" style="margin-top: 50px; margin-bottom: 10px;">Bienvenido a FEIHub</h1>
                 <p class="text-center" style="font-size: 14px; margin-top: 10px;">Crea tu cuenta como estudiante o como académico para comenzar a usar FEIHub</p>
-                <div class="row justify-content-end">
+                <div class="row justify-content-center">
                     <div class="col-4">
                         <button id="studentButton" disabled type="button" style=" margin-bottom: 10px; margin-right: 50%;float: start;" class="w-100 btn btn-lg btn-custom active" onclick="toggleRegisterForm()">Estudiante</button>
                     </div>
                     <div class="col-4">
-                        <button id="academicButton" type="button" class="w-100 btn btn-lg btn-custom" onclick="toggleRegisterForm()">Académico</button>
+                        <button id="academicButton" type="button" class="w-100 btn btn-lg btn-custom"onclick="toggleRegisterForm()">Académico</button>
                     </div>
                 </div>
                 
@@ -152,8 +169,8 @@ function toggleRegisterForm() {
                         <input type="password" name="studentPassword" class="form-control" id="studentPassword" placeholder="Contraseña">
                         <label for="studentPassword">Contraseña</label>
                         <div class="input-group-append">
-                            <button class="btn btn-outline-secondary" type="button" onclick="togglePasswordVisibility()">
-                                <i id="passwordToggleIcon" class="fa fa-eye"></i>
+                            <button class="btn btn-outline-secondary" type="button" onclick="togglePasswordVisibilityStudent()">
+                            <i id="passwordToggleIconStudent" class="fa fa-eye"></i>
                             </button>
                         </div>
                     </div>
@@ -190,14 +207,15 @@ function toggleRegisterForm() {
                         <input type="password" name="academicPassword" class="form-control" id="academicPassword" placeholder="Contraseña">
                         <label for="academicPassword">Contraseña</label>
                         <div class="input-group-append">
-                            <button class="btn btn-outline-secondary" type="button" onclick="togglePasswordVisibility()">
-                                <i id="passwordToggleIcon" class="fa fa-eye"></i>
+                            <button class="btn btn-outline-secondary" type="button" onclick="togglePasswordVisibilityAcademic()">
+                                <i id="passwordToggleIconAcademic" class="fa fa-eye"></i>
                             </button>
                         </div>
                     </div>
                 </div>
                  <div class="d-grid">
                     <button class="w-100 btn btn-lg btn-primary btn-custom" type="submit">Crear cuenta</button>
+                    <label class="text-center" style="font-size: 14px; margin-top: 20px;">¿Ya tienes cuenta? <a asp-page="LogIn">Iniciar sesión</a></label>
                     @if (Model.Message == "No puedes dejar campos vacíos" || Model.Message == "No se pudo crear tu usuario, inténtalo más tarde" || Model.Message == "No se pudieron crear tus credenciales, inténtalo más tarde"){
                         <div id="alertMessage" class="alert alert-danger alert-fade" role="alert">@Model.Message</div>
                         <script>
@@ -217,7 +235,7 @@ function toggleRegisterForm() {
                             }, 2000); 
                         </script>
                     }
-                    else
+                    @if (Model.Message == "Usuario creado exitosamente, inicia sesión para ingresar")
                     {
                         <div id="sucessMessage" class="alert alert-success mt-3 alert-fade">@Model.Message</div>
                         <script>
@@ -227,7 +245,6 @@ function toggleRegisterForm() {
                             }, 2000); 
                         </script>
                     }
-                    <label class="text-center" style="font-size: 14px; margin-top: 20px;">¿Ya tienes cuenta? <a asp-page="LogIn">Iniciar sesión</a></label>
                 </div>
                
             </div>

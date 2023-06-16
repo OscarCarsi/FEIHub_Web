@@ -1,7 +1,7 @@
 @page
 @model FEIHub_Web.Pages.LoginModel;
 @{
-    Layout=null;
+    Layout = null;
 }
 
 
@@ -47,14 +47,13 @@
     
 
     <main class="container">    
-    <form class="row justify-content-center" asp-page-handler="Login" method="POST" asp-page="./Login">
+    <form class="row justify-content-end" asp-page-handler="Login" method="POST" asp-page="./Login">
         <div class="row justify-content-start">
             <div class="col-md-6">
                 <img class="img-fluid" src="/Resources/FEIHub_Logo.png" style="max-height: 754px; width: 35%; position: absolute; top: 0; left: 0;" />
             </div>
-        </div>    
-        <div class="col align-self-end">
-            
+        </div> 
+            <p class="col-lg-6 align-self-end text-center custom-label" style="font-size: 25px; margin-top: -80px;margin-right: -87.5px;">Universidad Veracruzana</p>   
             <h1 class="text-end" style="margin-top: 50px; margin-bottom: 50px; margin-right: 10%;">Bienvenido a FEIHub</h1>
             
             <div class="row justify-content-end">
@@ -94,6 +93,10 @@
                             opacity: 0;
                             transition: opacity 0.5s ease-in-out;
                         }
+                        .custom-label {
+                            background-color: #063970;
+                            color : white;
+                        }
                     </style>
                     <button class="w-100 btn btn-lg btn-custom-login" type="submit" style="margin-bottom: 50px; margin-right: 10%;">Iniciar Sesión</button>  
                     @if (Model.Message == "Verifica tus credenciales" || Model.Message == "No puedes dejar campos vacíos" )
@@ -106,7 +109,7 @@
                             }, 2000); 
                         </script>
                     }
-                    else{
+                    @if (Model.Message != null &&  Model.Message.StartsWith("Bienvenido (a)")){
                         <div id="sucessMessage" class="alert alert-success mt-3 alert-fade">@Model.Message</div>
                         <script>
                             setTimeout(function() {
