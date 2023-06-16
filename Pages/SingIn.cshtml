@@ -1,4 +1,5 @@
 @page
+@model FEIHub_Web.Pages.SingInModel;
 @{
     Layout = null;
 }
@@ -33,6 +34,14 @@
             color: #000000; 
             box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
         }
+        .alert-fade {
+            opacity: 1;
+            transition: opacity 0.5s ease-in-out;
+        }
+        .alert-hide {
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
     </style>
     <script>
         function togglePasswordVisibility() {
@@ -49,43 +58,51 @@
                 passwordToggleIcon.classList.add("fa-eye");
             }
         }
+        var activeButton = "ACADEMIC";
 
-        function toggleRegisterForm() {
-            var studentForm = document.getElementById("studentForm");
-            var academicForm = document.getElementById("academicForm");
-            var studentButton = document.getElementById("studentButton");
-            var academicButton = document.getElementById("academicButton");
+function toggleRegisterForm() {
+  var studentForm = document.getElementById("studentForm");
+  var academicForm = document.getElementById("academicForm");
+  var studentButton = document.getElementById("studentButton");
+  var academicButton = document.getElementById("academicButton");
 
-            if (studentButton.classList.contains("active")) {
-                studentForm.style.display = "none";
-                academicForm.style.display = "block";
-                academicButton.classList.add("active");
-                studentButton.classList.remove("active");
-                studentButton.disable = true;
-                academicButton.disable = false;
-            } else {
-                studentForm.style.display = "block";
-                academicForm.style.display = "none";
-                studentButton.classList.add("active");
-                academicButton.classList.remove("active");
-                studentButton.disable = false;
-                academicButton.disable = true;
-            }
-        }
+  if (studentButton.classList.contains("active")) {
+    studentForm.style.display = "none";
+    academicForm.style.display = "block";
+    academicButton.classList.add("active");
+    studentButton.classList.remove("active");
+    studentButton.disabled = false;
+    academicButton.disabled = true;
+    activeButton = "ACADEMIC";
+    var param1Input = document.getElementById("activeButton");
+    param1Input.value = activeButton;
+  } else {
+    studentForm.style.display = "block";
+    academicForm.style.display = "none";
+    studentButton.classList.add("active");
+    academicButton.classList.remove("active");
+    studentButton.disabled = true;
+    academicButton.disabled = false;
+    activeButton = "STUDENT";
+    var param1Input = document.getElementById("activeButton");
+    param1Input.value = activeButton;
+  }
+}
     </script>
 </head>
 <body style="margin-top: -40px">
     <main class="container">
         <form class="row justify-content-end" asp-page-handler="Singin" method="POST" asp-page="./Singin">
             <div class="col-md-6">
-                <img class="img-fluid" src="/Resources/FEIHub_Logo.png" style="height: 800px; width: 35%; position: absolute; top: 0; left: 0;" />
+                <input type="text" name="activeButton" id="activeButton" value="STUDENT" hidden />
+                <img class="img-fluid" src="/Resources/FEIHub_Logo.png" style="height: 810px; width: 40%; position: absolute; top: 0; left: 0;" />
             </div>
             <div class="col-lg-6 align-self-end">
                 <h1 class="text-end" style="margin-top: 50px; margin-bottom: 10px; margin-right: 10%;">Bienvenido a FEIHub</h1>
                 <p class="text-center" style="font-size: 14px; margin-top: 10px;">Crea tu cuenta como estudiante o como académico para comenzar a usar FEIHub</p>
                 <div class="row justify-content-end">
                     <div class="col-4">
-                        <button id="studentButton" type="button" style=" margin-bottom: 10px; margin-right: 50%;float: start;" class="w-100 btn btn-lg btn-custom active" onclick="toggleRegisterForm()">Estudiante</button>
+                        <button id="studentButton" disabled type="button" style=" margin-bottom: 10px; margin-right: 50%;float: start;" class="w-100 btn btn-lg btn-custom active" onclick="toggleRegisterForm()">Estudiante</button>
                     </div>
                     <div class="col-4">
                         <button id="academicButton" type="button" class="w-100 btn btn-lg btn-custom" onclick="toggleRegisterForm()">Académico</button>
@@ -97,27 +114,27 @@
                     <div class="row">
                         <div class="col">
                             <div class="form-floating mb-3">
-                                <input type="text" name="studentFirstName" class="form-control" id="studentFirstName" placeholder="Nombre">
+                                <input type="text" name="studentName" class="form-control" id="studentFirstName" placeholder="Nombre">
                                 <label for="studentFirstName">Nombre</label>
                             </div>
                         </div>
                         <div class="col">
                             <div class="form-floating mb-3">
-                                <input type="text" name="studentLastName" class="form-control" id="studentLastName" placeholder="Apellido Paterno">
+                                <input type="text" name="studentPaternalSurname" class="form-control" id="studentLastName" placeholder="Apellido Paterno">
                                 <label for="studentLastName">Apellido Paterno</label>
                             </div>
                         </div>
                     </div>
                     <div class="form-floating mb-3">
-                        <input type="text" name="studentMiddleName" class="form-control" id="studentMiddleName" placeholder="Apellido Materno">
+                        <input type="text" name="studentMaternalSurname" class="form-control" id="studentMiddleName" placeholder="Apellido Materno">
                         <label for="studentMiddleName">Apellido Materno</label>
                     </div>
                     <div class="form-floating mb-3">
-                        <input type="text" name="studentMatricula" class="form-control" id="studentMatricula" placeholder="S20000000">
-                        <label for="studentMatricula">Matrícula</label>
+                        <input type="text" name="studentSchoolId" class="form-control" id="studentMatricula" placeholder="S20000000">
+                        <label for="studentMatricula">Ejemplo: S20000000</label>
                     </div>
                     <div class="form-floating mb-3">
-                        <select name="studentProgram" class="form-select" id="studentProgram">
+                        <select name="studentEducationalProgram" class="form-select" id="studentProgram">
                             <option value="Estadística">Estadística</option>
                             <option value="Ingeniería en Sistemas y Tecnologías de la Información">Ingeniería en Sistemas y Tecnologías de la Información</option>
                             <option value="Ingeniería de Software">Ingeniería de Software</option>
@@ -146,19 +163,19 @@
                     <div class="row">
                         <div class="col">
                             <div class="form-floating mb-3">
-                                <input type="text" name="academicFirstName" class="form-control" id="academicFirstName" placeholder="Nombre">
+                                <input type="text" name="academicName" class="form-control" id="academicFirstName" placeholder="Nombre">
                                 <label for="academicFirstName">Nombre</label>
                             </div>
                         </div>
                         <div class="col">
                             <div class="form-floating mb-3">
-                                <input type="text" name="academicLastName" class="form-control" id="academicLastName" placeholder="Apellido Paterno">
+                                <input type="text" name="academicPaternalSurname" class="form-control" id="academicLastName" placeholder="Apellido Paterno">
                                 <label for="academicLastName">Apellido Paterno</label>
                             </div>
                         </div>
                     </div>
                     <div class="form-floating mb-3">
-                        <input type="text" name="academicMiddleName" class="form-control" id="academicMiddleName" placeholder="Apellido Materno">
+                        <input type="text" name="academicMaternalSurname" class="form-control" id="academicMiddleName" placeholder="Apellido Materno">
                         <label for="academicMiddleName">Apellido Materno</label>
                     </div>
                     <div class="form-floating mb-3">
@@ -181,6 +198,35 @@
                 </div>
                  <div class="d-grid">
                     <button class="w-100 btn btn-lg btn-primary btn-custom" type="submit">Crear cuenta</button>
+                    @if (Model.Message == "No puedes dejar campos vacíos" || Model.Message == "No se pudo crear tu usuario, inténtalo más tarde" || Model.Message == "No se pudieron crear tus credenciales, inténtalo más tarde"){
+                        <div id="alertMessage" class="alert alert-danger alert-fade" role="alert">@Model.Message</div>
+                        <script>
+                            setTimeout(function() {
+                                var alertMessage = document.getElementById("alertMessage");
+                                alertMessage.classList.add("alert-hide");
+                            }, 2000); 
+                        </script>
+                    }
+                    @if (Model.Message =="Nombre de usuario en uso, ingresa otro nombre de usuario" || Model.Message == "Ya tienes una cuenta en este sistema, ve al inicio de sesión e ingresa tus credenciales de acceso" || Model.Message == "Verifica los datos proporcionados")
+                    {
+                        <div id="sucessMessage" class="alert alert-warning mt-3 alert-fade">@Model.Message</div>
+                        <script>
+                            setTimeout(function() {
+                                var alertMessage = document.getElementById("sucessMessage");
+                                alertMessage.classList.add("alert-hide");
+                            }, 2000); 
+                        </script>
+                    }
+                    else
+                    {
+                        <div id="sucessMessage" class="alert alert-success mt-3 alert-fade">@Model.Message</div>
+                        <script>
+                            setTimeout(function() {
+                                var alertMessage = document.getElementById("sucessMessage");
+                                alertMessage.classList.add("alert-hide");
+                            }, 2000); 
+                        </script>
+                    }
                     <label class="text-center" style="font-size: 14px; margin-top: 20px;">¿Ya tienes cuenta? <a asp-page="LogIn">Iniciar sesión</a></label>
                 </div>
                
