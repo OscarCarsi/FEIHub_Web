@@ -3,10 +3,12 @@
 @{
     Layout=null;
 }
+
 <!doctype html>
 <html lang="en">
     <head>
-        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
         <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     </head>
@@ -46,12 +48,7 @@
             <!-- #Main content-->
             <div class="main-content">
                 <div class="write-post-container">
-                    <div class="user-profile">
-                        <img src = "Resources/pic.jpg">
-                        <div>
-                            <p>Nombre de Usuario</p>
-                        </div>
-                    </div>
+                    <partial name="HeadlineUserPartial" for="thisUser"/>
                     <div class="post-input-container">
                         <textarea rows="3" placeholder="¿Qué estás pensando?"></textarea>
                         <div class="add-post-links">
@@ -70,137 +67,11 @@
                         </div>
                     </div>
                 </div>
-<!-- #region Publicación-->
-                <div class="post-container">
-                    <div class="post-row">
-                        <div class="user-profile">
-                            <img src = "Resources/pic.jpg">
-                            <div>
-                                <p>Nombre de Usuario</p>
-                                <span>16/06/2023 01:25 a.m.</span>
-                            </div>
-                        </div>
-                        <select class="form-select" id="inputGroupSelect01">
-                            <option selected></option>
-                            <option value="Everybody">Todos</option>
-                            <option value="Students">Estudiantes</option>
-                            <option value="Academics">Académicos</option>
-                        </select>
-
-                    </div>
-
-                        <p class="post-text">Entiendo que <span>aquí va todo el texto</span> que se supone que sse está publicando y tiene una referencia chance
-                            <a href="#">#SepaCreoQueLosHashtag</a>
-                            <a href="#">#Sepa13465</a>
-                        </p>
-                        <img src="Resources/uv.png" class="post-img">
-
-                        <div class="post-row">
-                            <div class="activity-icons">
-                                <div>
-                                    <button class="btn btn-primary-likes" type="submit">
-                                        <i class="fa-regular fa-thumbs-up"></i>
-                                    </button>
-                                    <button class="btn btn-primary-likes" type="submit">
-                                        <i class="fa-regular fa-thumbs-down"></i>
-                                    </button>
-                                    <button class="btn btn-primary-comment" type="submit">
-                                        <i class="fa-regular fa-comment"></i>
-                                    </button>
-                                    <button class="btn btn-primary-report" type="submit">
-                                        <i class="fa-solid fa-flag"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                </div>
-<!-- #endregion FIN-->
-
-<!-- #region Publicación-->
-                <div class="post-container">
-                    <div class="post-row">
-                        <div class="user-profile">
-                            <img src = "Resources/pic.jpg">
-                            <div>
-                                <p>Nombre de Usuario</p>
-                                <span>16/06/2023 01:25 a.m.</span>
-                            </div>
-                        </div>
-                        <a href="#">
-                            <i class="fa-solid fa-ellipsis-vertical"></i>
-                        </a>
-
-                    </div>
-
-                        <p class="post-text">Entiendo que <span>aquí va todo el texto</span> que se supone que sse está publicando y tiene una referencia chance
-                            <a href="#">#SepaCreoQueLosHashtag</a>
-                            <a href="#">#Sepa13465</a>
-                        </p>
-
-                        <div class="post-row">
-                            <div class="activity-icons">
-                                <div>
-                                    <button class="btn btn-primary-likes" type="submit">
-                                        <i class="fa-regular fa-thumbs-up"></i>
-                                    </button>
-                                    <button class="btn btn-primary-likes" type="submit">
-                                        <i class="fa-regular fa-thumbs-down"></i>
-                                    </button>
-                                    <button class="btn btn-primary-comment" type="submit">
-                                        <i class="fa-regular fa-comment"></i>
-                                    </button>
-                                    <button class="btn btn-primary-report" type="submit">
-                                        <i class="fa-solid fa-flag"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                </div>
-<!-- #endregion FIN-->
-
-<!-- #region Publicación-->
-                <div class="post-container">
-                    <div class="post-row">
-                        <div class="user-profile">
-                            <img src = "Resources/pic.jpg">
-                            <div>
-                                <p>Nombre de Usuario</p>
-                                <span>16/06/2023 01:25 a.m.</span>
-                            </div>
-                        </div>
-                        <a href="#">
-                            <i class="fa-solid fa-ellipsis-vertical"></i>
-                        </a>
-
-                    </div>
-
-                        <p class="post-text">Entiendo que <span>aquí va todo el texto</span> que se supone que sse está publicando y tiene una referencia chance
-                            <a href="#">#SepaCreoQueLosHashtag</a>
-                            <a href="#">#Sepa13465</a>
-                        </p>
-                        <img src="Resources/uv.png" class="post-img">
-
-                        <div class="post-row">
-                            <div class="activity-icons">
-                                <div>
-                                    <button class="btn btn-primary-likes" type="submit">
-                                        <i class="fa-regular fa-thumbs-up"></i>
-                                    </button>
-                                    <button class="btn btn-primary-likes" type="submit">
-                                        <i class="fa-regular fa-thumbs-down"></i>
-                                    </button>
-                                    <button class="btn btn-primary-comment" type="submit">
-                                        <i class="fa-regular fa-comment"></i>
-                                    </button>
-                                    <button class="btn btn-primary-report" type="submit">
-                                        <i class="fa-solid fa-flag"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                </div>
-<!-- #endregion FIN-->
-
+                @if(Model.posts!=null){
+                    foreach(var post in Model.posts){
+                        <partial name="PostParcial" model="@post"/>
+                    }
+                }
             </div>
             <!-- #endregion -->
 
@@ -210,24 +81,12 @@
                     <h4>Seguidos</h4>
                     <a href=#>Ver todos</a>
                 </div>
-                <div class = "following">
-                    <div class = "online">
-                        <img src = "Resources/pic.jpg">
-                    </div>
-                    <p>Nombre Seguido</p>
-                </div>
-                <div class = "following">
-                    <div class = "online">
-                        <img src = "Resources/pic.jpg">
-                    </div>
-                    <p>Nombre Seguido2</p>
-                </div>
-                <div class = "following">
-                    <div class = "online">
-                        <img src = "Resources/pic.jpg">
-                    </div>
-                    <p>Nombre Seguido3</p>
-                </div>
+                @if(Model.following!=null){
+                    @for(int i = 0; i < Model.following.Count(); i++)
+                    {
+                        <partial name="HeadlineUserPartial" model="@Model.following.ElementAt(i)"/>
+                    }
+                }
             </div>
         </div>
     </body>

@@ -102,17 +102,6 @@ nav{
 .main-content{
   flex-basis: 55%;
 }
-.following{
-  display: flex;
-  align-items: center;
-  margin-bottom: 20px;
-}
-.following .online img{
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  margin-right: 10px;
-}
 .sidebar-title{
   display: flex;
   align-items: center;
@@ -135,21 +124,7 @@ nav{
   padding: 20px;
   columns: #626262;
 }
-.user-profile{
-  display: flex;
-  align-items: center;
-}
-.user-profile img{
-  width: 45px;
-  height: 45px;
-  border-radius: 50%;
-  margin-right: 10px;
-}
-.user-profile p{
-  margin-bottom: -5px;
-  font-weight: 500;
-  color: #626262;
-}
+
 .post-input-container{
   padding-left: 55px;
   padding-top: 20px;
@@ -194,6 +169,11 @@ nav{
   margin: 15px 0;
   font-size: 15px;
 }
+.post-title{
+  color: black;
+  margin: 15px 0;
+  font-weight: bold;
+}
 .post-text span{
   color: #626262;
   font-weight: 500;
@@ -203,9 +183,10 @@ nav{
   text-decoration: none;
 }
 .post-img{
-  width: 100%;
+  width: 30%;
   border-radius: 4px;
   margin-bottom: 5px;
+  margin: 1%;
 }
 .btn-primary-likes{
   color:#fff;
@@ -239,6 +220,46 @@ nav{
 .post-row a{
   color: #626262;
 }
-.post-row select{
-  width: min-content;
+.post-select{
+  min-width: 2px;
+  max-width:fit-content;
+  min-height: 2px;
+  max-height:fit-content;
+}
+.post-icons{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.target{
+  background-color: #2bc3e9;
+  width: max-content;
+  color: black;
+  font-weight: lighter;
+}
+.rigth-align{
+  display: flex;
+  align-items:end;
+  justify-content:right;
+}
+.dropdown-toggle{
+  background-color: white;
+  color: black;
+  border-color: white;
+}
+.user-profile{
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.user-profile img{
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+.user-profile p{
+  margin-bottom: -5px;
+  font-weight: 500;
+  color: #626262;
 }
