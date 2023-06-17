@@ -39,17 +39,16 @@ public class LoginModel : PageModel
             UserCredentials userCredentials = await usersAPIServices.GetUserCredentials(usernameLogin, passwordLogin);
             if (userCredentials.StatusCode == System.Net.HttpStatusCode.OK)
             {
-                Message = $"Bienvenido (a), {userCredentials.username}!";
                 user.Username = userCredentials.username;
                 user.Rol = userCredentials.rol;
                 user.Token = userCredentials.token;
                 if(userCredentials.rol == "ADMIN")
                 {
-                    Message = $"A pantalla admin";
+                    Message = $"Bienvenido (a), {userCredentials.username}!";
                 }
                 else
                 {
-                    Message = "A menu principal";
+                    Message = $"Bienvenido (a), {userCredentials.username}!";
                 }
             }
             else
