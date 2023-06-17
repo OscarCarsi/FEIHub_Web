@@ -1,0 +1,234 @@
+@page
+@model FEIHub_Web.Pages.MainPageModel;
+@{
+    Layout=null;
+}
+<!doctype html>
+<html lang="en">
+    <head>
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
+        <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    </head>
+    <body>
+        <nav>
+            <div class="nav-left">
+                <img src="Resources/Logo.png" class="logo">
+            </div>
+            <div class="nav-center">
+                <div class="search-box">
+
+                    <input type="text" placeholder="Buscar en FeiHub">
+                    <button class="btn btn-primary-icon"><i class="fa-solid fa-magnifying-glass"></i></button>
+                </div>
+
+            </div>
+            <div class="nav-rigth">
+                    <button class="btn btn-primary-icon"><i class="fa-solid fa-user"></i></button>
+                    <button class="btn btn-primary-icon"><i class="fa-solid fa-message"></i></button>
+                    <button class="btn btn-primary-icon"><i class="fa-solid fa-message"></i></button>
+                    <button class="btn btn-primary-icon"><i class="fa-solid fa-arrow-right-from-bracket"></i></button>
+            </div>
+        </nav>
+
+        <div class = "containerMainPage">
+            <div class="left-sidebar">
+                <div class="input-group mb-3">
+                    <label class="input-group-text" for="inputGroupSelect01">Viendo publicaciones para: </label>
+                    <select class="form-select" id="inputGroupSelect01">
+                        <option value="Everybody">Todos</option>
+                        <option value="Students">Estudiantes</option>
+                        <option value="Academics">Académicos</option>
+                    </select>
+                </div>
+                <button type="button" class="btn btn-light">Nueva publicación</button>
+            </div>
+            <!-- #Main content-->
+            <div class="main-content">
+                <div class="write-post-container">
+                    <div class="user-profile">
+                        <img src = "Resources/pic.jpg">
+                        <div>
+                            <p>Nombre de Usuario</p>
+                        </div>
+                    </div>
+                    <div class="post-input-container">
+                        <textarea rows="3" placeholder="¿Qué estás pensando?"></textarea>
+                        <div class="add-post-links">
+                                <div class="post-components">
+                                    <label>Etiqueta: </label>
+                                    <select class="form-select" aria-label="Etiqueta:">
+                                        <option selected>Todos</option>
+                                        <option value="1">Estudiantes</option>
+                                        <option value="2">Académicos</option>
+                                    </select>
+                                </div>
+                                <button type="button" class="btn btn-outline-warning">Agregar imágenes
+                                    <i class="fa-regular fa-image"></i>
+                                </button>
+                                <button type="button" class="btn btn-outline-info">Publicar</button>
+                        </div>
+                    </div>
+                </div>
+<!-- #region Publicación-->
+                <div class="post-container">
+                    <div class="post-row">
+                        <div class="user-profile">
+                            <img src = "Resources/pic.jpg">
+                            <div>
+                                <p>Nombre de Usuario</p>
+                                <span>16/06/2023 01:25 a.m.</span>
+                            </div>
+                        </div>
+                        <select class="form-select" id="inputGroupSelect01">
+                            <option selected></option>
+                            <option value="Everybody">Todos</option>
+                            <option value="Students">Estudiantes</option>
+                            <option value="Academics">Académicos</option>
+                        </select>
+
+                    </div>
+
+                        <p class="post-text">Entiendo que <span>aquí va todo el texto</span> que se supone que sse está publicando y tiene una referencia chance
+                            <a href="#">#SepaCreoQueLosHashtag</a>
+                            <a href="#">#Sepa13465</a>
+                        </p>
+                        <img src="Resources/uv.png" class="post-img">
+
+                        <div class="post-row">
+                            <div class="activity-icons">
+                                <div>
+                                    <button class="btn btn-primary-likes" type="submit">
+                                        <i class="fa-regular fa-thumbs-up"></i>
+                                    </button>
+                                    <button class="btn btn-primary-likes" type="submit">
+                                        <i class="fa-regular fa-thumbs-down"></i>
+                                    </button>
+                                    <button class="btn btn-primary-comment" type="submit">
+                                        <i class="fa-regular fa-comment"></i>
+                                    </button>
+                                    <button class="btn btn-primary-report" type="submit">
+                                        <i class="fa-solid fa-flag"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+<!-- #endregion FIN-->
+
+<!-- #region Publicación-->
+                <div class="post-container">
+                    <div class="post-row">
+                        <div class="user-profile">
+                            <img src = "Resources/pic.jpg">
+                            <div>
+                                <p>Nombre de Usuario</p>
+                                <span>16/06/2023 01:25 a.m.</span>
+                            </div>
+                        </div>
+                        <a href="#">
+                            <i class="fa-solid fa-ellipsis-vertical"></i>
+                        </a>
+
+                    </div>
+
+                        <p class="post-text">Entiendo que <span>aquí va todo el texto</span> que se supone que sse está publicando y tiene una referencia chance
+                            <a href="#">#SepaCreoQueLosHashtag</a>
+                            <a href="#">#Sepa13465</a>
+                        </p>
+
+                        <div class="post-row">
+                            <div class="activity-icons">
+                                <div>
+                                    <button class="btn btn-primary-likes" type="submit">
+                                        <i class="fa-regular fa-thumbs-up"></i>
+                                    </button>
+                                    <button class="btn btn-primary-likes" type="submit">
+                                        <i class="fa-regular fa-thumbs-down"></i>
+                                    </button>
+                                    <button class="btn btn-primary-comment" type="submit">
+                                        <i class="fa-regular fa-comment"></i>
+                                    </button>
+                                    <button class="btn btn-primary-report" type="submit">
+                                        <i class="fa-solid fa-flag"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+<!-- #endregion FIN-->
+
+<!-- #region Publicación-->
+                <div class="post-container">
+                    <div class="post-row">
+                        <div class="user-profile">
+                            <img src = "Resources/pic.jpg">
+                            <div>
+                                <p>Nombre de Usuario</p>
+                                <span>16/06/2023 01:25 a.m.</span>
+                            </div>
+                        </div>
+                        <a href="#">
+                            <i class="fa-solid fa-ellipsis-vertical"></i>
+                        </a>
+
+                    </div>
+
+                        <p class="post-text">Entiendo que <span>aquí va todo el texto</span> que se supone que sse está publicando y tiene una referencia chance
+                            <a href="#">#SepaCreoQueLosHashtag</a>
+                            <a href="#">#Sepa13465</a>
+                        </p>
+                        <img src="Resources/uv.png" class="post-img">
+
+                        <div class="post-row">
+                            <div class="activity-icons">
+                                <div>
+                                    <button class="btn btn-primary-likes" type="submit">
+                                        <i class="fa-regular fa-thumbs-up"></i>
+                                    </button>
+                                    <button class="btn btn-primary-likes" type="submit">
+                                        <i class="fa-regular fa-thumbs-down"></i>
+                                    </button>
+                                    <button class="btn btn-primary-comment" type="submit">
+                                        <i class="fa-regular fa-comment"></i>
+                                    </button>
+                                    <button class="btn btn-primary-report" type="submit">
+                                        <i class="fa-solid fa-flag"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+<!-- #endregion FIN-->
+
+            </div>
+            <!-- #endregion -->
+
+            <!-- #rigth bar -->
+            <div class="rigth-sidebar">
+                <div class = "sidebar-title">
+                    <h4>Seguidos</h4>
+                    <a href=#>Ver todos</a>
+                </div>
+                <div class = "following">
+                    <div class = "online">
+                        <img src = "Resources/pic.jpg">
+                    </div>
+                    <p>Nombre Seguido</p>
+                </div>
+                <div class = "following">
+                    <div class = "online">
+                        <img src = "Resources/pic.jpg">
+                    </div>
+                    <p>Nombre Seguido2</p>
+                </div>
+                <div class = "following">
+                    <div class = "online">
+                        <img src = "Resources/pic.jpg">
+                    </div>
+                    <p>Nombre Seguido3</p>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
