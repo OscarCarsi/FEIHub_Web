@@ -1,3 +1,4 @@
+using System.Reflection.Metadata;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -16,6 +17,9 @@ public class MainPageModel : PageModel
     public User thisUser {get; set;}
     public List<User> following {get; set;}
 
+        [TempData]
+        public string Mensaje { get; set; }
+
     public MainPageModel(){
         posts = new List<Posts>()
         {
@@ -25,7 +29,7 @@ public class MainPageModel : PageModel
                 author = "Nombre de usuario",
                 body = "Aquí va el texto de la publicación",
                 dateOfPublish = DateTime.Now,
-                target = "Students",
+                target = "Student",
                 likes = 3,
                 dislikes = 5
             },
@@ -35,7 +39,7 @@ public class MainPageModel : PageModel
                 author = "Nombre de usuario2",
                 body = "Aquí va el texto de la publicación",
                 dateOfPublish = DateTime.Now,
-                target = "Students",
+                target = "Student",
                 likes = 3,
                 dislikes = 5
             },
@@ -64,9 +68,12 @@ public class MainPageModel : PageModel
                 profilePhoto="/Resources/pic.jpg"
             }
         };
-
+        Mensaje = "hola";
     }
-
-
-
+    [HttpPost]
+        public IActionResult OnPost()
+        {
+            this.Mensaje = "fsdhd";
+            return RedirectToPage();
+        }
 }

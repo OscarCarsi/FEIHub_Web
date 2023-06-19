@@ -24,16 +24,16 @@ public class LoginModel : PageModel
 
     public void OnGet()
     {
-        
-    }    
-    
+
+    }
+
 
     public async Task<IActionResult> OnPostLogin()
-    {   
+    {
         bool withoutFieldsNull = ValidateNullFieldsLogin();
         if (withoutFieldsNull)
         {
-                 
+
             string usernameLogin = username;
             string passwordLogin = Encryptor.Encrypt(password);
             UserCredentials userCredentials = await usersAPIServices.GetUserCredentials(usernameLogin, passwordLogin);
@@ -49,6 +49,7 @@ public class LoginModel : PageModel
                 else
                 {
                     Message = $"Bienvenido (a), {userCredentials.username}!";
+                    return RedirectToPage("/MainPage");
                 }
             }
             else
@@ -73,5 +74,7 @@ public class LoginModel : PageModel
             return fullFields;
         }
 
-    
+    public void OnPostLogOut(){
+        SingletonUser.Instance.BorrarSinglenton();
+    }
 }

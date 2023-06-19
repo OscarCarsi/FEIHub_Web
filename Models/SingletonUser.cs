@@ -37,7 +37,7 @@ namespace FeiHub.Models
         {
             SingletonUser.Instance.Username = "";
             SingletonUser.Instance.Rol = "";
-            SingletonUser.Instance.Token = "";
+            SingletonUser.Instance.Token = null;
         }
     }
 }

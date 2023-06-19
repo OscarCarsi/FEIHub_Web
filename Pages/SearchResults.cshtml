@@ -1,0 +1,14 @@
+@page
+@model FEIHub_Web.Pages.SearchResultsModel;
+@{
+    ViewData["Title"] = "Resultados de búsqueda";
+}
+<h4>
+    Resultados
+</h4>
+
+@if(!String.IsNullOrWhiteSpace(Model.StringToSearch)){
+    <h2>
+        @Model.StringToSearch
+    </h2>
+}

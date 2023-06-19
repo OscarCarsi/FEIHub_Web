@@ -1,0 +1,14 @@
+@page
+@model FEIHub_Web.Pages.ProfileModel;
+@{
+    ViewData["Title"] = "Perfil";
+}
+<h4>
+    Perfil
+</h4>
+
+@if(Model.thisUser != null && Model.thisUser.username != null){
+    <h2>
+        @Model.thisUser.username
+    </h2>
+}

@@ -1,9 +1,8 @@
 @page
 @model FEIHub_Web.Pages.MainPageModel;
 @{
-    Layout=null;
+    ViewData["Title"] = "Página principal";
 }
-
 <!doctype html>
 <html lang="en">
     <head>
@@ -12,27 +11,8 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
         <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     </head>
+
     <body>
-        <nav>
-            <div class="nav-left">
-                <img src="Resources/Logo.png" class="logo">
-            </div>
-            <div class="nav-center">
-                <div class="search-box">
-
-                    <input type="text" placeholder="Buscar en FeiHub">
-                    <button class="btn btn-primary-icon"><i class="fa-solid fa-magnifying-glass"></i></button>
-                </div>
-
-            </div>
-            <div class="nav-rigth">
-                    <button class="btn btn-primary-icon"><i class="fa-solid fa-user"></i></button>
-                    <button class="btn btn-primary-icon"><i class="fa-solid fa-message"></i></button>
-                    <button class="btn btn-primary-icon"><i class="fa-solid fa-message"></i></button>
-                    <button class="btn btn-primary-icon"><i class="fa-solid fa-arrow-right-from-bracket"></i></button>
-            </div>
-        </nav>
-
         <div class = "containerMainPage">
             <div class="left-sidebar">
                 <div class="input-group mb-3">
@@ -43,34 +23,117 @@
                         <option value="Academics">Académicos</option>
                     </select>
                 </div>
-                <button type="button" class="btn btn-light">Nueva publicación</button>
+                <a class="btn btn-light" href="NewPost">Nueva publicación</a>
             </div>
             <!-- #Main content-->
             <div class="main-content">
-                <div class="write-post-container">
-                    <partial name="HeadlineUserPartial" for="thisUser"/>
-                    <div class="post-input-container">
-                        <textarea rows="3" placeholder="¿Qué estás pensando?"></textarea>
-                        <div class="add-post-links">
-                                <div class="post-components">
-                                    <label>Etiqueta: </label>
-                                    <select class="form-select" aria-label="Etiqueta:">
-                                        <option selected>Todos</option>
-                                        <option value="1">Estudiantes</option>
-                                        <option value="2">Académicos</option>
-                                    </select>
-                                </div>
-                                <button type="button" class="btn btn-outline-warning">Agregar imágenes
-                                    <i class="fa-regular fa-image"></i>
-                                </button>
-                                <button type="button" class="btn btn-outline-info">Publicar</button>
-                        </div>
-                    </div>
-                </div>
                 @if(Model.posts!=null){
                     foreach(var post in Model.posts){
-                        <partial name="PostParcial" model="@post"/>
+                        <div class="post-container">
+                            <div class="rigth-align">
+                                <p class="target">@post.GetTarget()</p>
+                            </div>
+                            <div class="post-row">
+                                <div class="user-profile">
+                                    @if(post.photos != null){
+                                        <img src = @post.photos?.ElementAt(0).url>
+                                    }
+                                    <div>
+                                        <p>@post.author</p>
+                                        <span>@post.dateOfPublish</span>
+                                    </div>
+                                </div>
+
+                                <div class="dropdown">
+                                    <button
+                                        class="btn btn-secondary dropdown-toggle"
+                                        type="button"
+                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <form asp-page="/EditPost" asp-page-handler="Initializate" method="post">
+                                                <input type="hidden" name="idPost" value=@post.id/>
+                                                <button class="btn" type="submit">Editar
+                                                </button>
+                                            </form>
+                                        </li>
+                                        <li>
+                                            <button class="btn" onclick="showModalDelete()">Eliminar
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="modal" tabindex="-1" id="modalDelete">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Eliminar publicación</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close" onclick="closeModalDelete()"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>¿Estás seguro que deseas eliminar la publicación?</p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal" onclick="closeModalDelete()">Cancelar</button>
+                                            <button type="button" class="btn btn-primary">Eliminar</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="post-title">@post.title</p>
+                            <p class="post-text">@post.body</p>
+                            <div class="post-icons">
+                                @if(post.photos != null){
+                                    for (int i = 0; i < post.photos.Count(); i++){
+                                        <img src=@post.photos.ElementAt(i).url class="post-img">
+                                    }
+                                }
+                            </div>
+                            <div class="post-icons">
+                                <div class="activity-icons">
+                                    <div>
+                                        <button class="btn btn-primary-likes" type="submit">
+                                            <i class="fa-regular fa-thumbs-up"></i>
+                                        </button>
+                                        <button class="btn btn-primary-likes" type="submit">
+                                            <i class="fa-regular fa-thumbs-down"></i>
+                                        </button>
+                                        <button class="btn btn-primary-comment" type="submit">
+                                            <i class="fa-regular fa-comment"></i>
+                                        </button>
+                                        <button class="btn btn-primary-report" onclick="showModalReport()">
+                                            <i class="fa-solid fa-flag"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     }
+                    <div class="modal" tabindex="-1" id="modalReport">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Reportar publicación</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close" onclick="closeModalReport()"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>Nos preocupamos por mantener un ambiente de respeto y comodidad para toda la comunidad.
+                                        Te agradecemos por preocuparte por ti y los demás usuarios reportando publicaciones que infrigen las reglas.<br>
+                                        ¿Estás seguro que deseas reportar la publicación?</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                    data-bs-dismiss="modal" onclick="closeModalReport()">Cancelar</button>
+                                    <button type="button" class="btn btn-primary">Reportar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 }
             </div>
             <!-- #endregion -->
@@ -89,5 +152,29 @@
                 }
             </div>
         </div>
+
     </body>
+
 </html>
+
+<script>
+    function showModalReport() {
+    var modal = document.getElementById("modalReport");
+    modal.style.display = "block";
+    }
+
+    function closeModalReport() {
+    var modal = document.getElementById("modalReport");
+    modal.style.display = "none";
+    }
+
+    function showModalDelete() {
+    var modal = document.getElementById("modalDelete");
+    modal.style.display = "block";
+    }
+
+    function closeModalDelete() {
+    var modal = document.getElementById("modalDelete");
+    modal.style.display = "none";
+    }
+</script>

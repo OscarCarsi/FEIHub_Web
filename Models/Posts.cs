@@ -18,7 +18,32 @@ namespace FeiHub.Models
         public string body { get; set; }
         public DateTime dateOfPublish { get; set; }
         public Photo[]? photos { get; set; }
-        public string target { get; set; }
+
+
+        public string target{get; set;}
+
+        public string GetTarget(){
+            string aux;
+            if (target == "Student")
+            {
+                aux = "Estudiantes";
+            }
+            else if (target == "Academic")
+            {
+                aux = "Académicos";
+            }
+            else if (target == "Everybody")
+            {
+                aux = "Todos";
+            }
+            else
+            {
+                aux = "";
+            }
+            return aux;
+        }
+
+
         public int likes { get; set; }
         public int dislikes { get; set; }
         public int reports { get; set; }

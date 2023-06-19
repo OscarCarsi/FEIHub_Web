@@ -1,0 +1,41 @@
+@page
+@model FEIHub_Web.Pages.EditPostModel;
+@{
+    ViewData["Title"] = "Editar publicación";
+}
+
+<br>
+<div class="containerPage">
+    <h3>Editar publicación</h3>
+<br>
+@if(!String.IsNullOrEmpty(Model.PostToEdit.id)){
+    <form  method="POST">
+        <div class="write-post-container">
+            <div class="post-input-container">
+                <div class="mb-3">
+                    <label for="title" class="form-label">Título</label>
+                    <input type="text" class="form-control" id="title" value="@Model.PostToEdit.title">
+                </div>
+                <div class="mb-3">
+                    <label for="body" class="form-label">Descripción</label>
+                    <textarea class="form-control" id="body" rows="3">@Model.PostToEdit.body</textarea>
+                </div>
+                <div class="add-post-links">
+                        <div class="post-components">
+                            <label>Etiqueta: </label>
+                            <select class="form-select" aria-label="Etiqueta:">
+                                <option selected>Todos</option>
+                                <option value="1">Estudiantes</option>
+                                <option value="2">Académicos</option>
+                            </select>
+                        </div>
+                        <label value="No podemos actualizar las fotos de tu publicación, pero pronto lo agregaremos"/>
+                        <button type="submit" class="btn btn-primary"> Guardar cambios</button>
+                        <a class="btn btn-secondary" asp-page="/MainPage">Cancelar</a>
+                </div>
+            </div>
+        </div>
+    </form>
+}
+
+</div>
