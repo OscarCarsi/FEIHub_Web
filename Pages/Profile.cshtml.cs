@@ -13,7 +13,6 @@ public class ProfileModel : PageModel
 {
     UsersAPIServices usersAPIServices = new UsersAPIServices();
     PostsAPIServices postsAPIServices = new PostsAPIServices();
-    SingletonUser user = SingletonUser.Instance;
     public List<Posts>? posts {get; set;}
     public User thisUser {get; set;}
     public string visibilityFollowing = "none";
@@ -34,7 +33,12 @@ public class ProfileModel : PageModel
     public string WarningMessage { get; set; }
     [TempData]
     public string SuccessMessage { get; set; }
-
+    [BindProperty]
+    public string idPost {get; set;}
+    [BindProperty]
+    public string titlePost {get; set;}
+    [BindProperty]
+    public string username {get; set;}
 
     public ProfileModel(){
         thisUser = new User();
@@ -281,5 +285,49 @@ public class ProfileModel : PageModel
             ErrorMessage = $"Tuvimos un error al dejar de seguir a {username}";
         }
         return followSuccessfull;
+    }
+
+    public IActionResult OnPostCompletePost()
+    {
+        return RedirectToPage("/CompletePost", new {idPost = idPost, titlePost = titlePost});
+    }
+
+    public async Task<IActionResult> OnPostLike(){
+        await LikePost();
+        return RedirectToPage("/Profile", new {username = username});
+    }
+    public async Task<IActionResult> OnPostDislike(){
+        await DislikePost();
+        return RedirectToPage("/Profile", new {username = username});
+    }
+    public IActionResult OnPostReport(){
+        ErrorMessage= "Report";
+        return RedirectToPage("/MainPage");
+    }
+    private async Task LikePost()
+    {
+        HttpResponseMessage response = await postsAPIServices.AddLike(idPost);
+        if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+        {
+            ErrorMessage = "Su sesión expiró, vuelve a iniciar sesión";
+            SingletonUser.Instance.BorrarSinglenton();
+        }
+        if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+        {
+            ErrorMessage = "No se pudo agregar el me gusta publicación inténtalo más tarde";
+        }
+    }
+    private async Task DislikePost()
+    {
+        HttpResponseMessage response = await postsAPIServices.AddDislike(idPost);
+        if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+        {
+            ErrorMessage = "Su sesión expiró, vuelve a iniciar sesión";
+            SingletonUser.Instance.BorrarSinglenton();
+        }
+        if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+        {
+            ErrorMessage = "No se pudo agregar el me gusta publicación inténtalo más tarde";
+        }
     }
 }

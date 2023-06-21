@@ -15,6 +15,9 @@
 <br>
 
 @if(Model.PostInformation!=null){
+    <form asp-page="/CompletePost" method="post">
+        <input type="hidden" name="idThisPost" value="@Model.PostInformation.id"/>
+        <input type="hidden" name="titleThisPost" value="@Model.PostInformation.title" />
         <div class="post-container">
             <div class="rigth-align">
                 <p class="target">@Model.PostInformation.target</p>
@@ -39,14 +42,10 @@
                     </button>
                     <ul class="dropdown-menu">
                         <li>
-                            <form asp-page="/EditPost" asp-page-handler="Initializate" method="post">
-                                <input type="hidden" name="idPost" value=@Model.PostInformation.id/>
-                                <button class="btn" type="submit">Editar
-                                </button>
-                            </form>
+                            <button class="btn" type="submit" asp-page-handler="EditPost">Editar</button>
                         </li>
                         <li>
-                            <button class="btn" onclick="showModalDelete()">
+                            <button class="btn" onclick="showModalDelete()" type="button">
                                 Eliminar
                             </button>
                         </li>
@@ -68,7 +67,7 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary"
                             data-bs-dismiss="modal" onclick="closeModalDelete()">Cancelar</button>
-                            <button type="button" class="btn btn-primary">Eliminar</button>
+                            <button type="submit" class="btn btn-primary" asp-page-handler="DeletePost">Eliminar</button>
                         </div>
                     </div>
                 </div>
@@ -91,18 +90,16 @@
                     }
                 }
             </div>
-
-
             <div class="post-icons">
                 <div class="activity-icons">
                     <div style="margin-right: 0px;">
-                        <button class="btn btn-primary-likes" type="submit">
+                        <button class="btn btn-primary-likes" type="submit" asp-page-handler="Like">
                             <i class="fa-regular fa-thumbs-up">&nbsp;@Model.PostInformation.likes</i>
                         </button>
-                        <button class="btn btn-primary-likes" type="submit">
+                        <button class="btn btn-primary-likes" type="submit" asp-page-handler="Dislike">
                             <i class="fa-regular fa-thumbs-down">&nbsp;@Model.PostInformation.dislikes</i>
                         </button>
-                        <button class="btn btn-primary-report" onclick="showModalReport()" style="margin-right: 0px;">
+                        <button class="btn btn-primary-report" onclick="showModalReport()" style="margin-right: 0px;" type="button">
                             <i class="fa-solid fa-flag"></i>
                         </button>
                     </div>
@@ -119,16 +116,17 @@
                 </script>
             }
             <!-- #region NEW COMMENT-->
-            <form asp-page="/CompletePost" asp-page-handler="Comment" method="post">
-                <div class="mb-3">
-                    <label for="body" class="form-label">Comentario</label>
-                    <input type="hidden" name="idPost" value="@Model.PostInformation.id"/>
-                    <input type="hidden" name="titlePost" value="@Model.PostInformation.title" />
-                    <textarea class="form-control" id="comment" rows="3" name="comment">@Model.thisComment</textarea>
-                    <br>
-                    <button class="btn btn-primary" type="submit">Comentar</button>
-                </div>
-            </form>
+            <div class="mb-3">
+                <label for="body" class="form-label">Comentario</label>
+                <input type="hidden" name="idPost" value="@Model.PostInformation.id"/>
+                <input type="hidden" name="titlePost" value="@Model.PostInformation.title" />
+                <textarea class="form-control" id="comment" rows="3" name="comment">@Model.thisComment</textarea>
+                <br>
+                <button class="btn btn-primary" type="submit" asp-page-handler="Comment">Comentar</button>
+            </div>
+
+
+
             @if (Model.CommentMessage != null)
             {
                 <div id="commentMessage" class="alert alert-danger alert-fade" role="alert">@Model.CommentMessage</div>
@@ -166,15 +164,12 @@
                                     </button>
                                     <ul class="dropdown-menu">
                                         <li>
-                                            <form asp-page="/EditPost" asp-page-handler="Initializate" method="post">
-                                                <input type="hidden" name="idComment" value="@comment.commentId"/>
-                                                <input type="hidden" name="idPost" value="@Model.PostInformation.id"/>
-                                                <button class="btn" type="submit">Editar
-                                                </button>
-                                            </form>
+                                            <input type="hidden" name="idComment" value="@comment.commentId"/>
+                                            <input type="hidden" name="idPost" value="@Model.PostInformation.id"/>
+                                            <button class="btn" type="submit" asp-page-handler="EditComment">Editar</button>
                                         </li>
                                         <li>
-                                            <button class="btn" onclick="showModalDelete()">
+                                            <button class="btn" onclick="showModalDeleteComment()" type="button">
                                                 Eliminar
                                             </button>
                                         </li>
@@ -197,7 +192,7 @@
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary"
                                         data-bs-dismiss="modal" onclick="closeModalDeleteComment()">Cancelar</button>
-                                        <button type="button" class="btn btn-primary">Eliminar</button>
+                                        <button type="submit"  asp-page-handler="DeleteComment" class="btn btn-primary">Eliminar</button>
                                     </div>
                                 </div>
                             </div>
@@ -229,11 +224,12 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary"
                     data-bs-dismiss="modal" onclick="closeModalReport()">Cancelar</button>
-                    <button type="button" class="btn btn-primary">Reportar</button>
+                    <button type="submit" class="btn btn-primary" asp-page-handler="Report">Reportar</button>
                 </div>
             </div>
         </div>
     </div>
+    </form>
     }
 
 
@@ -256,6 +252,10 @@
     function closeModalDelete() {
     var modal = document.getElementById("modalDelete");
     modal.style.display = "none";
+    }
+    function showModalDeleteComment() {
+    var modal = document.getElementById("modalDeleteComment");
+    modal.style.display = "block";
     }
     function closeModalDeleteComment() {
     var modal = document.getElementById("modalDeleteComment");

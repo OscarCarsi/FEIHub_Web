@@ -44,72 +44,68 @@
             <div class="main-content">
                 @if(Model.posts!=null){
                     foreach(var post in Model.posts){
-                        <div class="post-container">
-                            <div class="rigth-align">
-                                <p class="target">@post.target</p>
-                            </div>
-
-                            <div class="post-row">
-                                <div class="user-profile">
-                                    @if(post.AuthorUser.profilePhoto != null){
-                                        <img src = @post.AuthorUser.profilePhoto>
-                                    }
-                                    <div>
-                                        <p>@post.author</p>
-                                        <span>@post.dateOfPublish.ToShortDateString()</span>
-                                    </div>
+                        <form method="post" asp-page="/MainPage">
+                            <div class="post-container">
+                                <div class="rigth-align">
+                                    <p class="target">@post.target</p>
                                 </div>
 
-                            </div>
+                                <div class="post-row">
+                                    <div class="user-profile">
+                                        @if(post.AuthorUser.profilePhoto != null){
+                                            <img src = @post.AuthorUser.profilePhoto>
+                                        }
+                                        <div>
+                                            <p>@post.author</p>
+                                            <span>@post.dateOfPublish.ToShortDateString()</span>
+                                        </div>
+                                    </div>
 
-                            <p class="post-title">@post.title</p>
-                            <p class="post-text">@post.body</p>
-                            <div class="post-icons">
-                                @if(post.photos != null){
-                                    for (int i = 0; i<3 && i < post.photos.Count(); i++){
-                                        <img src=@post.photos.ElementAt(i).url class="post-img">
+                                </div>
+
+                                <p class="post-title">@post.title</p>
+                                <p class="post-text">@post.body</p>
+                                <div class="post-icons">
+                                    @if(post.photos != null){
+                                        for (int i = 0; i<3 && i < post.photos.Count(); i++){
+                                            <img src=@post.photos.ElementAt(i).url class="post-img">
+                                        }
                                     }
-                                }
-                            </div>
-                                @if(post.photos.Count() > 3){
-                                    <small><small><label style="background: rgb(108, 181, 196); color:black;">
-                                        La publicación contiene más imágenes, ábrela para verlas</label></small></small>
-                                }
-                                <form asp-page="/CompletePost"  method="get" >
+                                </div>
+                                    @if(post.photos.Count() > 3){
+                                        <small><small><label style="background: rgb(108, 181, 196); color:black;">
+                                            La publicación contiene más imágenes, ábrela para verlas</label></small></small>
+                                    }
                                     <input type="hidden" name="idPost" value="@post.id"/>
                                     <input type="hidden" name="titlePost" value="@post.title" />
-                                    <button class="btn " type="submit" style="margin: 1%; color: rgb(14, 14, 91); white-space: nowrap;" >
+                                    <button class="btn " type="submit" asp-page-handler="CompletePost" style="margin: 1%; color: rgb(14, 14, 91); white-space: nowrap;" >
                                         <small>Ver publicación completa</small>
                                     </button>
-                                </form>
 
 
-                            <div class="post-icons">
-                                <div class="activity-icons">
-                                    <div style="margin-right: 0px;">
-                                        <button class="btn btn-primary-likes" type="submit">
-                                            <i class="fa-regular fa-thumbs-up">&nbsp;@post.likes</i>
-                                        </button>
-                                        <button class="btn btn-primary-likes" type="submit">
-                                            <i class="fa-regular fa-thumbs-down">&nbsp;@post.dislikes</i>
-                                        </button>
-
-                                        <form asp-page="/CompletePost"  method="get" >
+                                <div class="post-icons">
+                                    <div class="activity-icons">
+                                        <div style="margin-right: 0px;">
+                                            <button class="btn btn-primary-likes" type="submit" asp-page-handler="Like">
+                                                <i class="fa-regular fa-thumbs-up">&nbsp;@post.likes</i>
+                                            </button>
+                                            <button class="btn btn-primary-likes" type="submit" asp-page-handler="Dislike">
+                                                <i class="fa-regular fa-thumbs-down">&nbsp;@post.dislikes</i>
+                                            </button>
                                             <input type="hidden" name="idPost" value="@post.id"/>
                                             <input type="hidden" name="titlePost" value="@post.title" />
-                                            <button class="btn btn-primary-comment" type="submit">
-                                            <i class="fa-regular fa-comment">&nbsp;@post.comments?.Count()</i>
-                                        </button>
-                                        </form>
-
-                                        <button class="btn btn-primary-report" onclick="showModalReport()" style="margin-right: 0px;">
-                                            <i class="fa-solid fa-flag"></i>
-                                        </button>
+                                            <button class="btn btn-primary-comment" type="submit" asp-page-handler="CompletePost">
+                                                <i class="fa-regular fa-comment">&nbsp;@post.comments?.Count()</i>
+                                            </button>
+                                            <button class="btn btn-primary-report" onclick="showModalReport()" style="margin-right: 0px;" type="button">
+                                                <i class="fa-solid fa-flag"></i>
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
 
-                        </div>
+                            </div>
+                        </form>
                     }
                     <div class="modal" tabindex="-1" id="modalReport">
                         <div class="modal-dialog">

@@ -132,13 +132,18 @@ margin: auto;
                 }
                 foreach(var follower in Model.followers)
                 {
-                    <div class="user-profile" style="border: 1px solid #61676a; border-radius: 6px; padding: 5px;">
-                        <img src = @follower.profilePhoto>
-                        <div>
-                            <p>@follower.username</p>
-                            <span>@follower.CompleteName()</span>
-                        </div>
-                    </div>
+                    <form asp-page="/Profile" method="get">
+                        <input type="hidden" name="username" value="@follower.username"></input>
+                        <button class="btn" type="submit">
+                            <div class="user-profile" style="border: 1px solid #61676a; border-radius: 6px; padding: 5px;">
+                                <img src = @follower.profilePhoto>
+                                <div>
+                                    <p>@follower.username</p>
+                                    <span>@follower.CompleteName()</span>
+                                </div>
+                            </div>
+                        </button>
+                    </form>
                 }
             }
         </div>
@@ -157,13 +162,19 @@ margin: auto;
             }
                 foreach (var following in Model.following)
                 {
-                    <div class="user-profile" style="border: 1px solid #61676a; border-radius: 6px; padding: 5px;">
-                        <img src = @following.profilePhoto>
-                        <div>
-                            <p>@following.username</p>
-                            <span>@following.CompleteName()</span>
-                        </div>
-                    </div>
+
+                    <form asp-page="/Profile" method="get">
+                        <input type="hidden" name="username" value="@following.username"></input>
+                        <button class="btn" type="submit">
+                            <div class="user-profile" style="border: 1px solid #61676a; border-radius: 6px; padding: 5px;">
+                                <img src = @following.profilePhoto>
+                                <div>
+                                    <p>@following.username</p>
+                                    <span>@following.CompleteName()</span>
+                                </div>
+                            </div>
+                        </button>
+                    </form>
                 }
             }
         </div>
@@ -179,72 +190,69 @@ margin: auto;
                                 El usuario no tiene publicaciones</label>
             }
             foreach(var post in Model.posts){
-                <div class="post-container">
-                    <div class="rigth-align">
-                        <p class="target">@post.target</p>
-                    </div>
-
-                    <div class="post-row">
-                        <div class="user-profile">
-                            @if(post.AuthorUser.profilePhoto != null){
-                                <img src = @post.AuthorUser.profilePhoto>
-                            }
-                            <div>
-                                <p>@post.author</p>
-                                <span>@post.dateOfPublish.ToShortDateString()</span>
-                            </div>
+                <form method="post" asp-page="/Profile">
+                    <input type="hidden" name="idPost" value="@post.id"/>
+                    <input type="hidden" name="titlePost" value="@post.title" />
+                    <input type="hidden" name="username" value="@post.author"/>
+                    <div class="post-container">
+                        <div class="rigth-align">
+                            <p class="target">@post.target</p>
                         </div>
 
-                    </div>
+                        <div class="post-row">
+                            <div class="user-profile">
+                                @if(post.AuthorUser.profilePhoto != null){
+                                    <img src = @post.AuthorUser.profilePhoto>
+                                }
+                                <div>
+                                    <p>@post.author</p>
+                                    <span>@post.dateOfPublish.ToShortDateString()</span>
+                                </div>
+                            </div>
 
-                    <p class="post-title">@post.title</p>
-                    <p class="post-text">@post.body</p>
-                    <div class="post-icons">
-                        @if(post.photos != null){
-                            for (int i = 0; i<3 && i < post.photos.Count(); i++){
-                                <img src=@post.photos.ElementAt(i).url class="post-img">
+                        </div>
+
+                        <p class="post-title">@post.title</p>
+                        <p class="post-text">@post.body</p>
+                        <div class="post-icons">
+                            @if(post.photos != null){
+                                for (int i = 0; i<3 && i < post.photos.Count(); i++){
+                                    <img src=@post.photos.ElementAt(i).url class="post-img">
+                                }
                             }
-                        }
-                    </div>
-                        @if(post.photos.Count() > 3){
-                            <small><small><label style="background: rgb(108, 181, 196); color:black;">
-                                La publicación contiene más imágenes, ábrela para verlas</label></small></small>
-                        }
-                        <form asp-page="/CompletePost"  method="get" >
-                            <input type="hidden" name="idPost" value="@post.id"/>
-                            <input type="hidden" name="titlePost" value="@post.title" />
-                            <button class="btn " type="submit" style="margin: 1%; color: rgb(14, 14, 91); white-space: nowrap;" >
+                        </div>
+                            @if(post.photos.Count() > 3){
+                                <small><small><label style="background: rgb(108, 181, 196); color:black;">
+                                    La publicación contiene más imágenes, ábrela para verlas</label></small></small>
+                            }
+                            <button class="btn " type="submit" asp-page-handler="CompletePost" style="margin: 1%; color: rgb(14, 14, 91); white-space: nowrap;" >
                                 <small>Ver publicación completa</small>
                             </button>
-                        </form>
 
 
-                    <div class="post-icons">
-                        <div class="activity-icons">
-                            <div style="margin-right: 0px;">
-                                <button class="btn btn-primary-likes" type="submit">
-                                    <i class="fa-regular fa-thumbs-up">&nbsp;@post.likes</i>
-                                </button>
-                                <button class="btn btn-primary-likes" type="submit">
-                                    <i class="fa-regular fa-thumbs-down">&nbsp;@post.dislikes</i>
-                                </button>
-
-                                <form asp-page="/CompletePost"  method="get" >
+                        <div class="post-icons">
+                            <div class="activity-icons">
+                                <div style="margin-right: 0px;">
+                                    <button class="btn btn-primary-likes" type="submit" asp-page-handler="Like">
+                                        <i class="fa-regular fa-thumbs-up">&nbsp;@post.likes</i>
+                                    </button>
+                                    <button class="btn btn-primary-likes" type="submit" asp-page-handler="Dislike">
+                                        <i class="fa-regular fa-thumbs-down">&nbsp;@post.dislikes</i>
+                                    </button>
                                     <input type="hidden" name="idPost" value="@post.id"/>
                                     <input type="hidden" name="titlePost" value="@post.title" />
-                                    <button class="btn btn-primary-comment" type="submit">
-                                    <i class="fa-regular fa-comment">&nbsp;@post.comments?.Count()</i>
-                                </button>
-                                </form>
-
-                                <button class="btn btn-primary-report" onclick="showModalReport()" style="margin-right: 0px;">
-                                    <i class="fa-solid fa-flag"></i>
-                                </button>
+                                    <button class="btn btn-primary-comment" type="submit" asp-page-handler="CompletePost">
+                                        <i class="fa-regular fa-comment">&nbsp;@post.comments?.Count()</i>
+                                    </button>
+                                    <button class="btn btn-primary-report" onclick="showModalReport()" style="margin-right: 0px;" type="button">
+                                        <i class="fa-solid fa-flag"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                </div>
+                    </div>
+                </form>
             }
             <div class="modal" tabindex="-1" id="modalReport">
                 <div class="modal-dialog">
@@ -301,6 +309,29 @@ margin: auto;
 <div>
 
 <script>
+    function showModalReport() {
+    var modal = document.getElementById("modalReport");
+    modal.style.display = "block";
+    }
+
+    function closeModalReport() {
+    var modal = document.getElementById("modalReport");
+    modal.style.display = "none";
+    }
+
+    function showModalDelete() {
+    var modal = document.getElementById("modalDelete");
+    modal.style.display = "block";
+    }
+
+    function closeModalDelete() {
+    var modal = document.getElementById("modalDelete");
+    modal.style.display = "none";
+    }
+    function closeModalDeleteComment() {
+    var modal = document.getElementById("modalDeleteComment");
+    modal.style.display = "none";
+    }
     function postChoosen() {
         var divFollowers = document.getElementById("followers");
         var divFollowing = document.getElementById("following");

@@ -13,11 +13,13 @@ public class CompletePostModel : PageModel
 {
     UsersAPIServices usersAPIServices = new UsersAPIServices();
     PostsAPIServices postsAPIServices = new PostsAPIServices();
-    SingletonUser user = SingletonUser.Instance;
     public Posts PostInformation {get; set;}
-    public User thisUser {get; set;}
     public string postOwner {get; set;}
     public string thisComment {get; set;}
+    [BindProperty]
+    public string idThisPost {get; set;}
+    [BindProperty]
+    public string titleThisPost {get; set;}
     [TempData]
     public string ErrorMessage { get; set; }
     [TempData]
@@ -26,9 +28,9 @@ public class CompletePostModel : PageModel
     public string SuccessMessage { get; set; }
 
 
+
     public CompletePostModel(){
         PostInformation = new Posts();
-        thisUser = new User();
         postOwner = "none";
         thisComment = "";
     }
@@ -125,13 +127,13 @@ public class CompletePostModel : PageModel
         return ComentarioExitoso;
     }
 
-    public async Task<IActionResult>  OnGet(string idPost, string titlePost){
-
+    public async Task  OnGet(string idPost, string titlePost)
+    {
         SearchPostByIdAndTitle(idPost, titlePost);
-        return Page();
     }
 
-    public async Task<IActionResult>  OnPostComment(string idPost, string titlePost, string comment){
+    public async Task<IActionResult>  OnPostComment(string idPost, string titlePost, string comment)
+    {
 
         SearchPostByIdAndTitle(idPost, titlePost);
         thisComment = comment;
@@ -149,4 +151,63 @@ public class CompletePostModel : PageModel
         }
         return Page();
     }
+    public IActionResult OnPostEditPost()
+    {
+        return RedirectToPage("/EditPost", new {idPost = idThisPost});
+    }
+
+    public IActionResult OnPostDeletePost(){
+        ErrorMessage= "Delete";
+        return RedirectToPage("/CompletePost", new {idPost = idThisPost, titlePost = titleThisPost});
+    }
+    public IActionResult OnPostEditComment(string idComment, string idPost){
+        ErrorMessage= "Edit comment";
+        return RedirectToPage("/CompletePost", new {idPost = idThisPost, titlePost = titleThisPost});
+    }
+    public IActionResult OnPostDeleteComment(string idComment, string idPost){
+        ErrorMessage= "Delete comment";
+        return RedirectToPage("/CompletePost", new {idPost = idThisPost, titlePost = titleThisPost});
+    }
+
+    public async Task<IActionResult> OnPostLike(){
+        await LikePost();
+        return RedirectToPage("/CompletePost", new {idPost = idThisPost, titlePost = titleThisPost});
+    }
+    public async Task<IActionResult> OnPostDislike(){
+        await DislikePost();
+        return RedirectToPage("/CompletePost", new {idPost = idThisPost, titlePost = titleThisPost});
+    }
+    public IActionResult OnPostReport(){
+        ErrorMessage= "Report";
+        return RedirectToPage("/CompletePost", new {idPost = idThisPost, titlePost = titleThisPost});
+    }
+    private async Task LikePost()
+    {
+        PostInformation.likes++;
+        HttpResponseMessage response = await postsAPIServices.AddLike(idThisPost);
+        if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+        {
+            ErrorMessage = "Su sesión expiró, vuelve a iniciar sesión";
+            SingletonUser.Instance.BorrarSinglenton();
+        }
+        if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+        {
+            ErrorMessage = "No se pudo agregar el me gusta publicación inténtalo más tarde";
+        }
+    }
+    private async Task DislikePost()
+    {
+        PostInformation.dislikes++;
+        HttpResponseMessage response = await postsAPIServices.AddDislike(idThisPost);
+        if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+        {
+            ErrorMessage = "Su sesión expiró, vuelve a iniciar sesión";
+            SingletonUser.Instance.BorrarSinglenton();
+        }
+        if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+        {
+            ErrorMessage = "No se pudo agregar el me gusta publicación inténtalo más tarde";
+        }
+    }
+
 }

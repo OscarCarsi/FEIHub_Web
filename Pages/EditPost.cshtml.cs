@@ -34,6 +34,18 @@ public class EditPostModel : PageModel
                 likes = 3,
                 dislikes = 5
             };
-
+    }
+    public void OnGet(string idPost){
+        //buscar post por id
+        PostToEdit = new Posts(){
+            id = idPost,
+                title = "Otra publicación de prueba",
+                author = "Nombre de usuario2",
+                body = "Aquí va el texto de la publicación",
+                dateOfPublish = DateTime.Now,
+                target = "Student",
+                likes = 3,
+                dislikes = 5
+            };
     }
 }
