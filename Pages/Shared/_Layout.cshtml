@@ -37,7 +37,7 @@
             </div>
 
             <div class="nav-rigth">
-                    <form asp-page="/Profile" asp-page-handler="Initializate" method="post">
+                    <form asp-page="/Profile" method="Get">
                         <input type="hidden" name="username" value=@SingletonUser.Instance.Username></input>
                         <button class="btn btn-primary-icon" type="submit">
                             <i class="fa-solid fa-user"></i>

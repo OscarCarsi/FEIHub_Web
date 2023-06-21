@@ -12,68 +12,234 @@ namespace FEIHub_Web.Pages;
 public class MainPageModel : PageModel
 {
     UsersAPIServices usersAPIServices = new UsersAPIServices();
-    SingletonUser user = SingletonUser.Instance;
+    PostsAPIServices postsAPIServices = new PostsAPIServices();
+    public SingletonUser user = SingletonUser.Instance;
     public List<Posts>? posts {get; set;}
     public User thisUser {get; set;}
     public List<User> following {get; set;}
 
         [TempData]
-        public string Mensaje { get; set; }
+        public string ErrorMessage { get; set; }
+
+        [TempData]
+        public string WarningMessage { get; set; }
+
+
+    public async void AddPostWithoutFollowings()
+    {
+        var task = Task.Run(async () =>
+        {
+            List<Posts> postsObtained = await postsAPIServices.GetPostsWithoutFollowings(SingletonUser.Instance.Rol);
+            if(postsObtained.Count > 0)
+            {
+                if(postsObtained[0].StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    foreach(Posts post in postsObtained)
+                    {
+                        User userData = await usersAPIServices.GetUser(post.author);
+                        if (userData.profilePhoto == null)
+                        {
+                            userData.profilePhoto = "Resources/usuario.png";
+                        }
+                        post.AuthorUser = userData;
+                        if(post.target == "EVERYBODY")
+                        {
+                            post.target= "Todos";
+                        }
+                        if (post.target == "ACADEMIC")
+                        {
+                            post.target = "Académicos";
+                        }
+                        if (post.target == "STUDENT")
+                        {
+                            post.target = "Estudiantes";
+                        }
+                        posts.Add(post);
+                    }
+                }
+                if (postsObtained[0].StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                {
+                    ErrorMessage = "Su sesión expiró, vuelve a iniciar sesión";
+                    SingletonUser.Instance.BorrarSinglenton();
+                }
+                if (postsObtained[0].StatusCode == System.Net.HttpStatusCode.InternalServerError)
+                {
+                    ErrorMessage = "Tuvimos un error al obtener las publicaciones, inténtalo más tarde";
+                }
+            }
+            else
+            {
+                WarningMessage = "No existen publicaciones recientes";
+            }
+        });
+        task.GetAwaiter().GetResult();
+        task.Dispose();
+    }
+
+    public async void AddFollowing()
+        {
+
+            Task.Run(async () =>
+            {
+                 following = await usersAPIServices.GetListUsersFollowing(SingletonUser.Instance.Username).ConfigureAwait(false);
+            }).GetAwaiter().GetResult();
+
+            if (following.Count > 0)
+            {
+                if (following[0].StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    for (int i = 0; i < following.Count; i++){
+                        if (following[i].profilePhoto == null){
+                            following[i].profilePhoto = "Resources/usuario.png";
+                        }
+                    }
+                }
+                if (following[0].StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                {
+                    ErrorMessage = "Su sesión expiró, vuelve a iniciar sesión";
+                    SingletonUser.Instance.BorrarSinglenton();
+                }
+                if (following[0].StatusCode == System.Net.HttpStatusCode.InternalServerError)
+                {
+                    ErrorMessage = "Tuvimos un error al obtener a quiénes sigues, inténtalo más tarde";
+                }
+            }
+            else
+            {
+                WarningMessage = "Sigue a tus amigos para verlos aquí";
+                AddPostWithoutFollowings();
+            }
+        }
+    public async void AddPostWithTarget()
+        {
+            var task = Task.Run(async () =>
+            {
+                posts = await postsAPIServices.GetPostsByTarget(following,SingletonUser.Instance.Rol);
+
+                if (posts.Count > 0)
+                {
+                    if (posts[0].StatusCode == System.Net.HttpStatusCode.OK)
+                    {
+                        for (int i = 0; i < posts.Count; i++)
+                        {
+                            User userData = await usersAPIServices.GetUser(posts[i].author);
+                            if (userData.profilePhoto == null)
+                            {
+                                userData.profilePhoto = "Resources/usuario.png";
+                            }
+                            posts[i].AuthorUser = userData;
+                            if(posts[i].target == "EVERYBODY")
+                            {
+                                posts[i].target= "Todos";
+                            }
+                            if (posts[i].target == "ACADEMIC")
+                            {
+                                posts[i].target = "Académicos";
+                            }
+                            if (posts[i].target == "STUDENT")
+                            {
+                                posts[i].target = "Estudiantes";
+                            }
+                        }
+                    }
+                    if (posts[0].StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                    {
+                        ErrorMessage = "Su sesión expiró, vuelve a iniciar sesión";
+                        SingletonUser.Instance.BorrarSinglenton();
+                    }
+                    if (posts[0].StatusCode == System.Net.HttpStatusCode.InternalServerError)
+                    {
+                        ErrorMessage = "Tuvimos un error al obtener las publicaciones, inténtalo más tarde";
+                    }
+                }
+                else
+                {
+                    WarningMessage = "No existen publicaciones recientes";
+                }
+            });
+            task.GetAwaiter().GetResult();
+            task.Dispose();
+        }
+
+
+    public async void AddPrincipalPosts()
+        {
+            Task.Run(async () =>
+            {
+                posts = await postsAPIServices.GetPrincipalPosts(following, SingletonUser.Instance.Rol).ConfigureAwait(false);
+
+                if (posts.Count > 0)
+                {
+                    if (posts[0].StatusCode == System.Net.HttpStatusCode.OK)
+                    {
+                        for (int i = 0; i < posts.Count; i++)
+                        {
+                            User userData = await usersAPIServices.GetUser(posts[i].author);
+                            if (userData.profilePhoto == null)
+                            {
+                                userData.profilePhoto = "Resources/usuario.png";
+                            }
+                            posts[i].AuthorUser = userData;
+                            if(posts[i].target == "EVERYBODY")
+                            {
+                                posts[i].target= "Todos";
+                            }
+                            if (posts[i].target == "ACADEMIC")
+                            {
+                                posts[i].target = "Académicos";
+                            }
+                            if (posts[i].target == "STUDENT")
+                            {
+                                posts[i].target = "Estudiantes";
+                            }
+                        }
+                    }
+                    if (posts[0].StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                    {
+                        ErrorMessage = "Su sesión expiró, vuelve a iniciar sesión";
+                        SingletonUser.Instance.BorrarSinglenton();
+                    }
+                    if (posts[0].StatusCode == System.Net.HttpStatusCode.InternalServerError)
+                    {
+                        ErrorMessage = "Tuvimos un error al obtener las publicaciones, inténtalo más tarde";
+                    }
+                }
+                else
+                {
+                    WarningMessage = "No existen publicaciones recientes";
+                }
+            }).GetAwaiter().GetResult();
+        }
+
+
 
     public MainPageModel(){
-        posts = new List<Posts>()
-        {
-            new Posts(){
-                id = "1123456",
-                title = "Publicación de prueba",
-                author = "Nombre de usuario",
-                body = "Aquí va el texto de la publicación",
-                dateOfPublish = DateTime.Now,
-                target = "Student",
-                likes = 3,
-                dislikes = 5
-            },
-            new Posts(){
-                id = "1123458",
-                title = "Otra publicación de prueba",
-                author = "Nombre de usuario2",
-                body = "Aquí va el texto de la publicación",
-                dateOfPublish = DateTime.Now,
-                target = "Student",
-                likes = 3,
-                dislikes = 5
-            },
-        };
-
-        Photo photo = new Photo();
-        photo.url = "Resources/uv.png";
-        posts.ElementAt(0).photos = new Photo[2];
-        posts.ElementAt(0).photos[0] = photo;
-        photo = new Photo();
-        photo.url = "https://www.grandespymes.com.ar/wp-content/uploads/2020/08/gente-feliz-830x553.jpg";
-        posts.ElementAt(0).photos[1] = photo;
-
-        thisUser = new User(){
-            username = "Saraiche",
-            profilePhoto = "/Resources/pic.jpg"
-
-        };
-        following = new List<User>(){
-            new User(){
-                username="Carsiano",
-                profilePhoto="/Resources/uv.png"
-            },
-            new User(){
-                username="Ferchito",
-                profilePhoto="/Resources/pic.jpg"
-            }
-        };
-        Mensaje = "hola";
+        user = SingletonUser.Instance;
+        posts = new List<Posts>();
+        following = new List<User>();
     }
-    [HttpPost]
-        public IActionResult OnPost()
-        {
-            this.Mensaje = "fsdhd";
-            return RedirectToPage();
+
+    public async Task<IActionResult> OnGet(string rol = "Everybody")
+    {
+        AddFollowing();
+
+        if(rol != "Everybody"){
+            AddPostWithTarget();
         }
+        else {
+            AddPrincipalPosts();
+        }
+        return Page();
+    }
+
+
+
+    public IActionResult OnPostEverybody(){
+        return RedirectToPage("/MainPage");
+    }
+
+    public IActionResult OnPostRol(){
+        return RedirectToPage("/MainPage", new {rol = SingletonUser.Instance.Rol});
+    }
+
 }

@@ -112,7 +112,7 @@ nav{
   align-self: flex-start;
   border-radius: 6px;
   padding: 20px;
-  width: auto;
+  /* width: auto; */
 }
 .main-content{
   flex-basis: 55%;
@@ -307,4 +307,23 @@ nav{
   font-size: 28px;
   font-weight: bold;
   cursor: pointer;
+}
+
+
+
+.image-group a {
+  margin-right: 3%; /* Espacio entre las imágenes */
+}
+
+.image-group a:last-child {
+  margin-right: 0; /* No aplicar margen a la última imagen */
+}
+
+.comment-container{
+  width: 100%;
+  border-radius: 6px;
+  padding: 20px;
+  color: #626262;
+  margin: 20px 0;
+  border: 1px solid #61676a;
 }

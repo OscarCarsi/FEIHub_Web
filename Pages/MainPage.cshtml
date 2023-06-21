@@ -15,14 +15,29 @@
     <body>
         <div class = "containerMainPage">
             <div class="left-sidebar">
-                <div class="input-group mb-3">
-                    <label class="input-group-text" for="inputGroupSelect01">Viendo publicaciones para: </label>
-                    <select class="form-select" id="inputGroupSelect01">
-                        <option value="Everybody">Todos</option>
-                        <option value="Students">Estudiantes</option>
-                        <option value="Academics">Académicos</option>
-                    </select>
-                </div>
+                        <div class="dropdown">
+                            <button
+                                class="btn btn-secondary dropdown-toggle"
+                                type="button"
+                                data-bs-toggle="dropdown" aria-expanded="false">Viendo publicaciones para
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <form asp-page="/MainPage" asp-page-handler="Everybody" method="post">
+                                        <button class="btn" type="submit">Todos
+                                        </button>
+                                    </form>
+                                </li>
+
+                                <li>
+                                    <form asp-page="/MainPage" asp-page-handler="Rol" method="post">
+                                        <button class="btn" type="submit" id="buttonRol">
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                        <br>
                 <a class="btn btn-light" href="NewPost">Nueva publicación</a>
             </div>
             <!-- #Main content-->
@@ -31,86 +46,69 @@
                     foreach(var post in Model.posts){
                         <div class="post-container">
                             <div class="rigth-align">
-                                <p class="target">@post.GetTarget()</p>
+                                <p class="target">@post.target</p>
                             </div>
+
                             <div class="post-row">
                                 <div class="user-profile">
-                                    @if(post.photos != null){
-                                        <img src = @post.photos?.ElementAt(0).url>
+                                    @if(post.AuthorUser.profilePhoto != null){
+                                        <img src = @post.AuthorUser.profilePhoto>
                                     }
                                     <div>
                                         <p>@post.author</p>
-                                        <span>@post.dateOfPublish</span>
+                                        <span>@post.dateOfPublish.ToShortDateString()</span>
                                     </div>
                                 </div>
 
-                                <div class="dropdown">
-                                    <button
-                                        class="btn btn-secondary dropdown-toggle"
-                                        type="button"
-                                        data-bs-toggle="dropdown" aria-expanded="false">
-                                    </button>
-                                    <ul class="dropdown-menu">
-                                        <li>
-                                            <form asp-page="/EditPost" asp-page-handler="Initializate" method="post">
-                                                <input type="hidden" name="idPost" value=@post.id/>
-                                                <button class="btn" type="submit">Editar
-                                                </button>
-                                            </form>
-                                        </li>
-                                        <li>
-                                            <button class="btn" onclick="showModalDelete()">Eliminar
-                                            </button>
-                                        </li>
-                                    </ul>
-                                </div>
                             </div>
-                            <div class="modal" tabindex="-1" id="modalDelete">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title">Eliminar publicación</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                            aria-label="Close" onclick="closeModalDelete()"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <p>¿Estás seguro que deseas eliminar la publicación?</p>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary"
-                                            data-bs-dismiss="modal" onclick="closeModalDelete()">Cancelar</button>
-                                            <button type="button" class="btn btn-primary">Eliminar</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+
                             <p class="post-title">@post.title</p>
                             <p class="post-text">@post.body</p>
                             <div class="post-icons">
                                 @if(post.photos != null){
-                                    for (int i = 0; i < post.photos.Count(); i++){
+                                    for (int i = 0; i<3 && i < post.photos.Count(); i++){
                                         <img src=@post.photos.ElementAt(i).url class="post-img">
                                     }
                                 }
                             </div>
+                                @if(post.photos.Count() > 3){
+                                    <small><small><label style="background: rgb(108, 181, 196); color:black;">
+                                        La publicación contiene más imágenes, ábrela para verlas</label></small></small>
+                                }
+                                <form asp-page="/CompletePost"  method="get" >
+                                    <input type="hidden" name="idPost" value="@post.id"/>
+                                    <input type="hidden" name="titlePost" value="@post.title" />
+                                    <button class="btn " type="submit" style="margin: 1%; color: rgb(14, 14, 91); white-space: nowrap;" >
+                                        <small>Ver publicación completa</small>
+                                    </button>
+                                </form>
+
+
                             <div class="post-icons">
                                 <div class="activity-icons">
-                                    <div>
+                                    <div style="margin-right: 0px;">
                                         <button class="btn btn-primary-likes" type="submit">
-                                            <i class="fa-regular fa-thumbs-up"></i>
+                                            <i class="fa-regular fa-thumbs-up">&nbsp;@post.likes</i>
                                         </button>
                                         <button class="btn btn-primary-likes" type="submit">
-                                            <i class="fa-regular fa-thumbs-down"></i>
+                                            <i class="fa-regular fa-thumbs-down">&nbsp;@post.dislikes</i>
                                         </button>
-                                        <button class="btn btn-primary-comment" type="submit">
-                                            <i class="fa-regular fa-comment"></i>
+
+                                        <form asp-page="/CompletePost"  method="get" >
+                                            <input type="hidden" name="idPost" value="@post.id"/>
+                                            <input type="hidden" name="titlePost" value="@post.title" />
+                                            <button class="btn btn-primary-comment" type="submit">
+                                            <i class="fa-regular fa-comment">&nbsp;@post.comments?.Count()</i>
                                         </button>
-                                        <button class="btn btn-primary-report" onclick="showModalReport()">
+                                        </form>
+
+                                        <button class="btn btn-primary-report" onclick="showModalReport()" style="margin-right: 0px;">
                                             <i class="fa-solid fa-flag"></i>
                                         </button>
                                     </div>
                                 </div>
                             </div>
+
                         </div>
                     }
                     <div class="modal" tabindex="-1" id="modalReport">
@@ -135,6 +133,25 @@
                         </div>
                     </div>
                 }
+                @if (Model.ErrorMessage != null)
+                {
+                    <div id="alertMessage" class="alert alert-danger alert-fade" role="alert">@Model.ErrorMessage</div>
+                    <script>
+                        setTimeout(function() {
+                            var alertMessage = document.getElementById("alertMessage");
+                            alertMessage.style.display = "none";
+                        }, 2000);
+                    </script>
+                }
+                @if (Model.WarningMessage != null){
+                    <div id="warningMessage" class="alert alert-warning mt-3 alert-fade">@Model.WarningMessage</div>
+                    <script>
+                        setTimeout(function() {
+                            var alertMessage = document.getElementById("warningMessage");
+                            alertMessage.style.display = "none";
+                        }, 2000);
+                    </script>
+                }
             </div>
             <!-- #endregion -->
 
@@ -142,12 +159,16 @@
             <div class="rigth-sidebar">
                 <div class = "sidebar-title">
                     <h4>Seguidos</h4>
-                    <a href=#>Ver todos</a>
                 </div>
                 @if(Model.following!=null){
                     @for(int i = 0; i < Model.following.Count(); i++)
                     {
-                        <partial name="HeadlineUserPartial" model="@Model.following.ElementAt(i)"/>
+                        <form asp-page="/Profile" method="get">
+                            <input type="hidden" name="username" value=@Model.following.ElementAt(i).username></input>
+                            <button class="btn" type="submit">
+                                <partial name="HeadlineUserPartial" model="@Model.following.ElementAt(i)"/>
+                            </button>
+                        </form>
                     }
                 }
             </div>
@@ -168,13 +189,21 @@
     modal.style.display = "none";
     }
 
-    function showModalDelete() {
-    var modal = document.getElementById("modalDelete");
-    modal.style.display = "block";
-    }
+</script>
 
-    function closeModalDelete() {
-    var modal = document.getElementById("modalDelete");
-    modal.style.display = "none";
-    }
+@{
+    string rol = Model.user?.Rol ?? "";
+}
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var myButton = document.getElementById("buttonRol");
+        var rol = @Html.Raw(Json.Serialize(rol));
+
+        if (rol === "STUDENT") {
+            myButton.textContent = "Estudiantes";
+        } else {
+            myButton.textContent = "Académicos";
+        }
+    });
 </script>
