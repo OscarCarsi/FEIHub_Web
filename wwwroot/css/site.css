@@ -326,4 +326,6 @@ nav{
   color: #626262;
   margin: 20px 0;
   border: 1px solid #61676a;
+  resize: none;
+  overflow: hidden;
 }

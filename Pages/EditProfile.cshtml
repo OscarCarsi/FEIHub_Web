@@ -1,7 +1,7 @@
 @page
 @model FEIHub_Web.Pages.EditProfileModel;
 @{
-    ViewData["Title"] = "Editar publicación";
+    ViewData["Title"] = "Editar perfil";
 }
 
 <br>
@@ -34,12 +34,6 @@
                         <button type="submit" class="btn btn-primary" asp-page-handler="Edit"> Guardar cambios</button>
                         <button class="btn btn-secondary" type="submit"  asp-page-handler="Cancel">Cancelar</button>
 
-                    @* <form asp-page="/Profile" method="Get">
-                        <input type="hidden" name="username" value=@Model.thisUser.username></input>
-                        <button class="btn btn-secondary" type="submit">
-                            Cancelar
-                        </button>
-                    </form> *@
                 </div>
             </div>
         </div>

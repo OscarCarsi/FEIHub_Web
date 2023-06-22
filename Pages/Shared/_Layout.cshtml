@@ -20,43 +20,65 @@
 </head>
 <body>
     <header>
-        <nav>
-            <div class="nav-left">
-                <a class="logo" asp-area="" asp-page="/MainPage">
-                    <img src="Resources/Logo.png" class="logo">
-                </a>
-            </div>
+        @if(SingletonUser.Instance.Rol == "ADMIN")
+        {
+            <nav>
+                <div class="nav-left">
+                    <a class="logo" asp-area="" asp-page="/ManagePosts">
+                        <img src="Resources/Logo.png" class="logo">
+                    </a>
+                </div>
 
-            <div class="nav-center">
-                <form asp-page="/SearchResults" asp-page-handler="Search" method="post">
-                    <div class="search-box">
-                        <input type="text" placeholder="Buscar en FeiHub" name="search">
-                        <button class="btn btn-primary-icon"><i class="fa-solid fa-magnifying-glass"></i></button>
-                    </div>
-                </form>
-            </div>
+                <div class="nav-rigth">
 
-            <div class="nav-rigth">
-                    <form asp-page="/Profile" method="Get">
-                        <input type="hidden" name="username" value=@SingletonUser.Instance.Username></input>
-                        <button class="btn btn-primary-icon" type="submit">
-                            <i class="fa-solid fa-user"></i>
-                        </button>
+                        <form asp-page="/LogIn" asp-page-handler="LogOut" method="post">
+                            <button class="btn btn-primary-icon" type="submit">
+                                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                            </button>
+                        </form>
+                </div>
+            </nav>
+        }
+        else
+        {
+            <nav>
+                <div class="nav-left">
+                    <a class="logo" asp-area="" asp-page="/MainPage">
+                        <img src="Resources/Logo.png" class="logo">
+                    </a>
+                </div>
+
+                <div class="nav-center">
+                    <form asp-page="/SearchResults" asp-page-handler="Search" method="get">
+                        <div class="search-box">
+                            <input type="text" placeholder="Buscar en FeiHub" name="search">
+                            <button class="btn btn-primary-icon"><i class="fa-solid fa-magnifying-glass"></i></button>
+                        </div>
                     </form>
+                </div>
 
-                    <form asp-page="/Chats">
-                        <button class="btn btn-primary-icon" type="submit">
-                            <i class="fa-solid fa-message"></i>
-                        </button>
-                    </form>
+                <div class="nav-rigth">
+                        <form asp-page="/Profile" method="Get">
+                            <input type="hidden" name="username" value=@SingletonUser.Instance.Username></input>
+                            <button class="btn btn-primary-icon" type="submit">
+                                <i class="fa-solid fa-user"></i>
+                            </button>
+                        </form>
 
-                    <form asp-page="/LogIn" asp-page-handler="LogOut" method="post">
-                        <button class="btn btn-primary-icon" type="submit">
-                            <i class="fa-solid fa-arrow-right-from-bracket"></i>
-                        </button>
-                    </form>
-            </div>
-        </nav>
+                        @* <form asp-page="/Chats">
+                            <button class="btn btn-primary-icon" type="submit">
+                                <i class="fa-solid fa-message"></i>
+                            </button>
+                        </form> *@
+
+                        <form asp-page="/LogIn" asp-page-handler="LogOut" method="post">
+                            <button class="btn btn-primary-icon" type="submit">
+                                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                            </button>
+                        </form>
+                </div>
+            </nav>
+        }
     </header>
     <div class="container">
         <main role="main" class="pb-3">

@@ -55,7 +55,7 @@ margin: auto;
 .wrap-panel {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
+    justify-content: left;
     padding: 30px;
     border-radius: 20px;
   }
@@ -221,7 +221,7 @@ margin: auto;
                                 }
                             }
                         </div>
-                            @if(post.photos.Count() > 3){
+                            @if(post.photos != null && post.photos.Count() > 3){
                                 <small><small><label style="background: rgb(108, 181, 196); color:black;">
                                     La publicación contiene más imágenes, ábrela para verlas</label></small></small>
                             }
@@ -252,58 +252,67 @@ margin: auto;
                         </div>
 
                     </div>
-                </form>
-            }
-            <div class="modal" tabindex="-1" id="modalReport">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Reportar publicación</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                            aria-label="Close" onclick="closeModalReport()"></button>
-                        </div>
-                        <div class="modal-body">
-                            <p>Nos preocupamos por mantener un ambiente de respeto y comodidad para toda la comunidad.
-                                Te agradecemos por preocuparte por ti y los demás usuarios reportando publicaciones que infrigen las reglas.<br>
-                                ¿Estás seguro que deseas reportar la publicación?</p>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary"
-                            data-bs-dismiss="modal" onclick="closeModalReport()">Cancelar</button>
-                            <button type="button" class="btn btn-primary">Reportar</button>
+                    <div class="modal" tabindex="-1" id="modalReport">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Reportar publicación</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close" onclick="closeModalReport()"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>Nos preocupamos por mantener un ambiente de respeto y comodidad para toda la comunidad.
+                                        Te agradecemos por preocuparte por ti y los demás usuarios reportando publicaciones que infrigen las reglas.<br>
+                                        ¿Estás seguro que deseas reportar la publicación?</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                    data-bs-dismiss="modal" onclick="closeModalReport()">Cancelar</button>
+                                    <button type="submit" class="btn btn-primary" asp-page-handler="Report">Reportar</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        }
-        @if (Model.ErrorMessage != null)
-        {
-            <div id="alertMessage" class="alert alert-danger alert-fade" role="alert">@Model.ErrorMessage</div>
-            <script>
-                setTimeout(function() {
-                    var alertMessage = document.getElementById("alertMessage");
-                    alertMessage.style.display = "none";
-                }, 2000);
-            </script>
-        }
-        @if (Model.WarningMessage != null){
-            <div id="warningMessage" class="alert alert-warning mt-3 alert-fade">@Model.WarningMessage</div>
-            <script>
-                setTimeout(function() {
-                    var alertMessage = document.getElementById("warningMessage");
-                    alertMessage.style.display = "none";
-                }, 2000);
-            </script>
-        }
-        @if (Model.SuccessMessage != null){
-                <div id="successMessage" class="alert alert-success mt-3 alert-fade">@Model.SuccessMessage</div>
-                <script>
-                    setTimeout(function() {
-                        var alertMessage = document.getElementById("successMessage");
-                        alertMessage.style.display = "none";
-                    }, 2000);
-                </script>
+                    @if (Model.SuccessMessage != null){
+                        <div id="successMessage" class="alert alert-success mt-3 alert-fade">@Model.SuccessMessage</div>
+                        <script>
+                            var alertElement = document.getElementById("successMessage");
+                            alertElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            alertElement.focus();
+                            setTimeout(function() {
+                                var alertMessage = document.getElementById("successMessage");
+                                alertMessage.style.display = "none";
+                            }, 2000);
+                        </script>
+                    }
+                    @if (Model.ErrorMessage != null)
+                    {
+                        <div id="alertMessage" class="alert alert-danger alert-fade" role="alert">@Model.ErrorMessage</div>
+                        <script>
+                            var alertElement = document.getElementById("alertMessage");
+                            alertElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            alertElement.focus();
+                            setTimeout(function() {
+                                var alertMessage = document.getElementById("alertMessage");
+                                alertMessage.style.display = "none";
+                            }, 2000);
+                        </script>
+                    }
+                    @if (Model.WarningMessage != null){
+                        <div id="warningMessage" class="alert alert-warning mt-3 alert-fade">@Model.WarningMessage</div>
+                        <script>
+                            var alertElement = document.getElementById("warningMessage");
+                            alertElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            alertElement.focus();
+                            setTimeout(function() {
+                                var alertMessage = document.getElementById("warningMessage");
+                                alertMessage.style.display = "none";
+                            }, 2000);
+                        </script>
+                    }
+                </form>
             }
+        }
     </div>
     <!-- #region -->
 <div>

@@ -26,13 +26,25 @@ public class CompletePostModel : PageModel
     public string CommentMessage { get; set; }
     [TempData]
     public string SuccessMessage { get; set; }
+    [TempData]
+    public string SuccessDelete { get; set; }
+    [BindProperty]
+    public string idComment {get; set;}
+    [BindProperty]
+    public string commentEdited {get; set;}
+    public string visibilityComment {get; set;}
 
 
 
     public CompletePostModel(){
         PostInformation = new Posts();
         postOwner = "none";
+        visibilityComment = "block";
         thisComment = "";
+        if (SingletonUser.Instance.Rol == "ADMIN")
+        {
+            visibilityComment = "none";
+        }
     }
 
     public async void SearchPostByIdAndTitle(string idPost, string titlePost)
@@ -134,7 +146,6 @@ public class CompletePostModel : PageModel
 
     public async Task<IActionResult>  OnPostComment(string idPost, string titlePost, string comment)
     {
-
         SearchPostByIdAndTitle(idPost, titlePost);
         thisComment = comment;
         if (!String.IsNullOrWhiteSpace(thisComment))
@@ -153,19 +164,31 @@ public class CompletePostModel : PageModel
     }
     public IActionResult OnPostEditPost()
     {
-        return RedirectToPage("/EditPost", new {idPost = idThisPost});
+        return RedirectToPage("/EditPost", new {idPost = idThisPost, title = titleThisPost});
     }
-
-    public IActionResult OnPostDeletePost(){
-        ErrorMessage= "Delete";
+    public async Task<IActionResult> OnPostDeletePost(){
+        int page = await DeletePost();
+        switch (page)
+        {
+            case 1:
+                return RedirectToPage("/ManagePosts");
+            case 2:
+                return RedirectToPage("/MainPage");
+            case 3:
+                return RedirectToPage("/LogIn");
+            case 4:
+                return RedirectToPage("/CompletePost", new {idPost = idThisPost, titlePost = titleThisPost});
+            default:
+                return RedirectToPage("/CompletePost", new {idPost = idThisPost, titlePost = titleThisPost});
+        }
+    }
+    public async Task<IActionResult> OnPostEditComment(string idComment, string idPost){
+        //ErrorMessage= "Edit comment" + " idComment: " + idComment + " idPost: " + idPost + " comment: " + commentEdited;
+        await EditComment(idComment, commentEdited, idPost);
         return RedirectToPage("/CompletePost", new {idPost = idThisPost, titlePost = titleThisPost});
     }
-    public IActionResult OnPostEditComment(string idComment, string idPost){
-        ErrorMessage= "Edit comment";
-        return RedirectToPage("/CompletePost", new {idPost = idThisPost, titlePost = titleThisPost});
-    }
-    public IActionResult OnPostDeleteComment(string idComment, string idPost){
-        ErrorMessage= "Delete comment";
+    public async Task<IActionResult> OnPostDeleteComment(string idComment, string idPost){
+        await DeleteComment(idComment, idPost);
         return RedirectToPage("/CompletePost", new {idPost = idThisPost, titlePost = titleThisPost});
     }
 
@@ -177,8 +200,8 @@ public class CompletePostModel : PageModel
         await DislikePost();
         return RedirectToPage("/CompletePost", new {idPost = idThisPost, titlePost = titleThisPost});
     }
-    public IActionResult OnPostReport(){
-        ErrorMessage= "Report";
+    public async Task<IActionResult> OnPostReport(){
+        await ReportThisPost();
         return RedirectToPage("/CompletePost", new {idPost = idThisPost, titlePost = titleThisPost});
     }
     private async Task LikePost()
@@ -207,6 +230,108 @@ public class CompletePostModel : PageModel
         if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
         {
             ErrorMessage = "No se pudo agregar el me gusta publicación inténtalo más tarde";
+        }
+    }
+    private async Task ReportThisPost()
+    {
+        HttpResponseMessage response =  await postsAPIServices.AddReport(idThisPost, 1);
+        if (response.IsSuccessStatusCode)
+        {
+            SuccessMessage = "Reporte enviado";
+        }
+        if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+        {
+            ErrorMessage = "Su sesión expiró, vuelve a iniciar sesión";
+            SingletonUser.Instance.BorrarSinglenton();
+        }
+        if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+        {
+            ErrorMessage = "Tuvimos un error al enviar el reporte, inténtalo más tarde";
+        }
+    }
+    private async Task DeleteComment(string idComment, string idPost)
+    {
+        Posts postCommented = await postsAPIServices.DeleteComment(idComment, idPost);
+        if (postCommented.StatusCode == System.Net.HttpStatusCode.OK)
+        {
+            SuccessMessage = "Comentario eliminado con éxito";
+        }
+        if (postCommented.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+        {
+            ErrorMessage = "Su sesión expiró, vuelve a iniciar sesión";
+            SingletonUser.Instance.BorrarSinglenton();
+        }
+        if (postCommented.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+        {
+            ErrorMessage = "Tuvimos un error al borrar el comentario, inténtalo más tarde";
+        }
+    }
+
+          /**
+          * Returns:
+          * 1 if you have to return to manage posts
+          * 2 if you have to return to main page
+          * 3 if you have to return to logIn
+          * 4 if you have to return to this page
+          */
+    private async Task<int> DeletePost()
+    {
+        int page = 4;
+        PostInformation.id = idThisPost;
+        HttpResponseMessage response = await postsAPIServices.DeletePost(PostInformation);
+        if (response.IsSuccessStatusCode)
+        {
+            SuccessDelete = "Publicación eliminada";
+            if(SingletonUser.Instance.Rol == "ADMIN")
+            {
+                page = 1;
+                //return RedirectToPage("/ManagePosts");
+            }
+            else
+            {
+                page = 2;
+                //return RedirectToPage("/MainPage");
+            }
+        }
+        if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+        {
+            ErrorMessage = "Su sesión expiró, vuelve a iniciar sesión";
+            SingletonUser.Instance.BorrarSinglenton();
+            page = 3;
+            //return RedirectToPage("/LogIn");
+        }
+        if(response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+        {
+            ErrorMessage = "No se pudo eliminar tu publicación inténtalo más tarde";
+            //return RedirectToPage("/CompletePost", new {idPost = idThisPost, titlePost = titleThisPost});
+        }
+        return page;
+    }
+    private async Task EditComment(string idComment, string commentToEdit, string idPost)
+    {
+        if (!String.IsNullOrEmpty(commentToEdit))
+        {
+            Comment comment = new Comment();
+            comment.commentId = idComment;
+            comment.body = commentToEdit;
+            Posts postCommented = await postsAPIServices.EditComment(comment, idPost);
+            if (postCommented.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                SuccessMessage = "Comentario editado con éxito";
+            }
+            if (postCommented.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            {
+                ErrorMessage = "Su sesión expiró, vuelve a iniciar sesión";
+                SingletonUser.Instance.BorrarSinglenton();
+            }
+            if (postCommented.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+            {
+                ErrorMessage = "Tuvimos un error al editar el comentario, inténtalo más tarde";
+            }
+        }
+        else
+        {
+            ErrorMessage = "El comentario no puede ir vacío";
         }
     }
 

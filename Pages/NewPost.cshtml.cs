@@ -121,6 +121,10 @@ public class NewPostModel : PageModel
         else
         {
             ErrorMessage = "No puede dejar campos vacíos";
+            return RedirectToPage("/NewPost", new {
+                title = this.title,
+                body = this.body
+            });
         }
         return Page();
     }

@@ -77,6 +77,7 @@ public class EditProfileModel : PageModel
                 else
                 {
                     ErrorMessage = "La foto de perfil debe ser de formato de imagen.";
+                    return RedirectToPage("/EditProfile");
                 }
             }
             string imageUrl = s3Service.GetImageURL(SingletonUser.Instance.Username);
@@ -85,6 +86,7 @@ public class EditProfileModel : PageModel
             if (response.IsSuccessStatusCode)
             {
                 SuccessMessage = "Perfil editado correctamente";
+                return RedirectToPage("/Profile", new {username = SingletonUser.Instance.Username});
             }
             if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
             {

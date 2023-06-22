@@ -42,9 +42,32 @@
             </div>
             <!-- #Main content-->
             <div class="main-content">
+                    @if (Model.SuccessMessage != null){
+                        <div id="successMessage" class="alert alert-success mt-3 alert-fade">@Model.SuccessMessage</div>
+                        <script>
+                            var alertElement = document.getElementById("successMessage");
+                            alertElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            alertElement.focus();
+                            setTimeout(function() {
+                                var alertMessage = document.getElementById("successMessage");
+                                alertMessage.style.display = "none";
+                            }, 2000);
+                        </script>
+                    }
+                @if (Model.SuccessDelete != null){
+                    <div id="successDelete" class="alert alert-success mt-3 alert-fade">@Model.SuccessDelete</div>
+                    <script>
+                        setTimeout(function() {
+                            var alertMessage = document.getElementById("successDelete");
+                            alertMessage.style.display = "none";
+                        }, 2000);
+                    </script>
+                }
                 @if(Model.posts!=null){
                     foreach(var post in Model.posts){
                         <form method="post" asp-page="/MainPage">
+                        <input type="hidden" name="idPost" value="@post.id"/>
+                        <input type="hidden" name="titlePost" value="@post.title" />
                             <div class="post-container">
                                 <div class="rigth-align">
                                     <p class="target">@post.target</p>
@@ -72,12 +95,10 @@
                                         }
                                     }
                                 </div>
-                                    @if(post.photos.Count() > 3){
+                                    @if(post.photos != null && post.photos.Count() > 3){
                                         <small><small><label style="background: rgb(108, 181, 196); color:black;">
                                             La publicación contiene más imágenes, ábrela para verlas</label></small></small>
                                     }
-                                    <input type="hidden" name="idPost" value="@post.id"/>
-                                    <input type="hidden" name="titlePost" value="@post.title" />
                                     <button class="btn " type="submit" asp-page-handler="CompletePost" style="margin: 1%; color: rgb(14, 14, 91); white-space: nowrap;" >
                                         <small>Ver publicación completa</small>
                                     </button>
@@ -92,8 +113,6 @@
                                             <button class="btn btn-primary-likes" type="submit" asp-page-handler="Dislike">
                                                 <i class="fa-regular fa-thumbs-down">&nbsp;@post.dislikes</i>
                                             </button>
-                                            <input type="hidden" name="idPost" value="@post.id"/>
-                                            <input type="hidden" name="titlePost" value="@post.title" />
                                             <button class="btn btn-primary-comment" type="submit" asp-page-handler="CompletePost">
                                                 <i class="fa-regular fa-comment">&nbsp;@post.comments?.Count()</i>
                                             </button>
@@ -105,8 +124,6 @@
                                 </div>
 
                             </div>
-                        </form>
-                    }
                     <div class="modal" tabindex="-1" id="modalReport">
                         <div class="modal-dialog">
                             <div class="modal-content">
@@ -123,11 +140,14 @@
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary"
                                     data-bs-dismiss="modal" onclick="closeModalReport()">Cancelar</button>
-                                    <button type="button" class="btn btn-primary">Reportar</button>
+                                    <button type="submit" class="btn btn-primary" asp-page-handler="Report">Reportar</button>
                                 </div>
                             </div>
                         </div>
                     </div>
+
+                        </form>
+                    }
                 }
                 @if (Model.ErrorMessage != null)
                 {
@@ -148,6 +168,7 @@
                         }, 2000);
                     </script>
                 }
+
             </div>
             <!-- #endregion -->
 

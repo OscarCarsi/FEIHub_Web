@@ -45,6 +45,7 @@ public class LoginModel : PageModel
                 if(userCredentials.rol == "ADMIN")
                 {
                     Message = $"Bienvenido (a), {userCredentials.username}!";
+                    return RedirectToPage("/ManagePosts");
                 }
                 else
                 {

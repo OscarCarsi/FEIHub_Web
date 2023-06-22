@@ -300,9 +300,9 @@ public class ProfileModel : PageModel
         await DislikePost();
         return RedirectToPage("/Profile", new {username = username});
     }
-    public IActionResult OnPostReport(){
-        ErrorMessage= "Report";
-        return RedirectToPage("/MainPage");
+    public async Task<IActionResult> OnPostReport(){
+        await ReportThisPost();
+        return RedirectToPage("/Profile", new {username = username});
     }
     private async Task LikePost()
     {
@@ -328,6 +328,23 @@ public class ProfileModel : PageModel
         if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
         {
             ErrorMessage = "No se pudo agregar el me gusta publicación inténtalo más tarde";
+        }
+    }
+    private async Task ReportThisPost()
+    {
+        HttpResponseMessage response =  await postsAPIServices.AddReport(idPost, 1);
+        if (response.IsSuccessStatusCode)
+        {
+            SuccessMessage = "Reporte enviado";
+        }
+        if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+        {
+            ErrorMessage = "Su sesión expiró, vuelve a iniciar sesión";
+            SingletonUser.Instance.BorrarSinglenton();
+        }
+        if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+        {
+            ErrorMessage = "Tuvimos un error al enviar el reporte, inténtalo más tarde";
         }
     }
 }

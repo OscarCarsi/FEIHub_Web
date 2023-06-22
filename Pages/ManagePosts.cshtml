@@ -1,0 +1,135 @@
+@page
+@model FEIHub_Web.Pages.ManagePostsModel;
+@{
+    ViewData["Title"] = "Administrar publicaciones";
+}
+<br><br><br><br>
+<h4>Gestionar publicaciones</h4>
+<br>
+<br>
+<h5>Publicaciones reportadas</h5>
+
+<style>
+    table {
+  width: 100%;
+  border-collapse: collapse;
+  padding: 15px;
+  border-radius: 30px;
+}
+
+th, td {
+  text-align: center;
+  padding: 8px;
+
+}
+</style>
+@if (Model.SuccessDelete != null){
+        <div id="successDelete" class="alert alert-success mt-3 alert-fade">@Model.SuccessDelete</div>
+        <script>
+            setTimeout(function() {
+                var alertMessage = document.getElementById("successDelete");
+                alertMessage.style.display = "none";
+            }, 2000);
+        </script>
+    }
+    @if (Model.ErrorMessage != null){
+        <div id="errorMessage" class="alert alert-success mt-3 alert-fade">@Model.ErrorMessage</div>
+        <script>
+            setTimeout(function() {
+                var alertMessage = document.getElementById("errorMessage");
+                alertMessage.style.display = "none";
+            }, 2000);
+        </script>
+    }
+    @if (Model.SuccessMessage != null){
+        <div id="successMessage" class="alert alert-success mt-3 alert-fade">@Model.SuccessMessage</div>
+        <script>
+            setTimeout(function() {
+                var alertMessage = document.getElementById("successMessage");
+                alertMessage.style.display = "none";
+            }, 2000);
+        </script>
+    }
+
+@if (Model.posts != null && Model.posts.Count > 0)
+{
+    <table class="table">
+    <thead>
+        <tr>
+        <th scope="col">Publicación</th>
+        <th scope="col">Autor</th>
+        <th scope="col">Número de reportes</th>
+        <th scope="col">Consultar</th>
+        <th scope="col">Borrar</th>
+        </tr>
+    </thead>
+    <tbody>
+            @foreach (var post in Model.posts)
+            {
+                <tr>
+                    <td>@post.title</td>
+                    <td>@post.reports</td>
+                    <td>@post.author</td>
+                    <td>
+                        <form asp-page="/CompletePost" method="Get">
+                            <input type="hidden" name="idPost" value="@post.id">
+                            <input type="hidden" name="titlePost" value="@post.title">
+                            <button class="btn" type="submit" style="color: blue;">
+                                <i class="fa-solid fa-eye"></i>
+                            </button>
+                        </form>
+                    </td>
+                    <td>
+                        <button class="btn" onclick="showModalDelete()" type="button" style="color: red;">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+                <div class="modal" tabindex="-1" id="modalDelete">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Eliminar publicación</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close" onclick="closeModalDelete()"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p>¿Estás seguro que deseas eliminar la publicación?</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary"
+                                data-bs-dismiss="modal" onclick="closeModalDelete()">Cancelar</button>
+                                <form asp-page="/ManagePosts" method="Post" asp-page-handler="DeletePost">
+                                    <input type="hidden" name="idPost" value="@post.id">
+                                    <input type="hidden" name="titlePost" value="@post.title">
+                                    <button class="btn btn-primary" type="submit">
+                                        Eliminar
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+    </tbody>
+    </table>
+
+}
+else
+{
+    <h4>
+        No se encontraron publicaciones
+    </h4>
+}
+
+<script>
+    function showModalDelete() {
+    var modal = document.getElementById("modalDelete");
+    modal.style.display = "block";
+    }
+
+    function closeModalDelete() {
+    var modal = document.getElementById("modalDelete");
+    modal.style.display = "none";
+    }
+</script>

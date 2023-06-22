@@ -12,19 +12,52 @@ namespace FEIHub_Web.Pages;
 public class SearchResultsModel : PageModel
 {
     UsersAPIServices usersAPIServices = new UsersAPIServices();
-    SingletonUser user = SingletonUser.Instance;
-    public Posts newPost {get; set;}
-    public User thisUser {get; set;}
+    public List<User> usersObtained = new List<User>();
     public string StringToSearch {get; set;}
+    [TempData]
+    public string ErrorMessage {get; set;}
 
 
     public SearchResultsModel(){
-        newPost = new Posts();
-        thisUser = new User();
-        StringToSearch = "";
+
     }
 
-    public void OnPostSearch(string search){
+    public void OnGet(string search){
         StringToSearch = search;
+        AddUsersFind(StringToSearch);
     }
+
+    public async void AddUsersFind(string usernameFind)
+    {
+        var task = Task.Run(async () =>
+        {
+            usersObtained = await usersAPIServices.FindUsers(usernameFind);
+            if (usersObtained.Count > 0)
+            {
+                if (usersObtained[0].StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    for (int i = 0; i < usersObtained.Count; i++)
+                    {
+                        if (usersObtained[i].profilePhoto == null)
+                        {
+                            usersObtained[i].profilePhoto = "Resources/usuario.png";
+                        }
+                    }
+                }
+                if (usersObtained[0].StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                {
+                    ErrorMessage = "Su sesión expiró, vuelve a iniciar sesión";
+                    SingletonUser.Instance.BorrarSinglenton();
+                }
+                if (usersObtained[0].StatusCode == System.Net.HttpStatusCode.InternalServerError)
+                {
+                    ErrorMessage = "Tuvimos un error al obtener a quiénes sigues, inténtalo más tarde";
+                }
+            }
+        });
+        task.GetAwaiter().GetResult();
+        task.Dispose();
+    }
+
+
 }
