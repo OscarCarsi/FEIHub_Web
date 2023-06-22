@@ -15,8 +15,8 @@
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
     <meta name="generator" content="Hugo 0.111.3">
     <title>Signin Template · Bootstrap v5.3</title>
-    
-    
+
+
 
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
@@ -41,21 +41,21 @@
     }
     </script>
 
-        
+
   </head>
   <body style="margin-top:50px">
-    
 
-    <main class="container">    
+
+    <main class="container">
     <form class="row justify-content-end" asp-page-handler="Login" method="POST" asp-page="./Login">
         <div class="row justify-content-start">
             <div class="col-md-6">
                 <img class="img-fluid" src="/Resources/FEIHub_Logo.png" style="max-height: 754px; width: 35%; position: absolute; top: 0; left: 0;" />
             </div>
-        </div> 
-            <p class="col-lg-6 align-self-end text-center custom-label" style="font-size: 25px; margin-top: -80px;margin-right: -87.5px;">Universidad Veracruzana</p>   
+        </div>
+            <p class="col-lg-6 align-self-end text-center custom-label" style="font-size: 25px; margin-top: -80px;margin-right: -87.5px;">Universidad Veracruzana</p>
             <h1 class="text-end" style="margin-top: 50px; margin-bottom: 50px; margin-right: 10%;">Bienvenido a FEIHub</h1>
-            
+
             <div class="row justify-content-end">
                 <div class="col-6 align-self-end">
                     <div class="form-floating">
@@ -76,13 +76,13 @@
                     <style>
                         .btn-custom-login {
                             background-color: #14a3c8; /
-                            color: #000000; 
+                            color: #000000;
                             box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
                         }
                         .btn-custom-singin {
                             background-color: #feffffef; /
                             color: #000000;
-                            border: 1px solid #000000; 
+                            border: 1px solid #000000;
                             box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
                         }
                         .alert-fade {
@@ -98,7 +98,7 @@
                             color : white;
                         }
                     </style>
-                    <button class="w-100 btn btn-lg btn-custom-login" type="submit" style="margin-bottom: 50px; margin-right: 10%;">Iniciar Sesión</button>  
+                    <button class="w-100 btn btn-lg btn-custom-login" type="submit" style="margin-bottom: 50px; margin-right: 10%;">Iniciar Sesión</button>
                     @if (Model.Message == "Verifica tus credenciales" || Model.Message == "No puedes dejar campos vacíos" )
                     {
                         <div id="alertMessage" class="alert alert-danger alert-fade" role="alert">@Model.Message</div>
@@ -106,7 +106,7 @@
                             setTimeout(function() {
                                 var alertMessage = document.getElementById("alertMessage");
                                 alertMessage.classList.add("alert-hide");
-                            }, 2000); 
+                            }, 2000);
                         </script>
                     }
                     @if (Model.Message != null &&  Model.Message.StartsWith("Bienvenido (a)")){
@@ -115,19 +115,19 @@
                             setTimeout(function() {
                                 var alertMessage = document.getElementById("sucessMessage");
                                 alertMessage.classList.add("alert-hide");
-                            }, 2000); 
+                            }, 2000);
                         </script>
                     }
                     <br>
-                    
+
                 </div>
-            </div>        
+            </div>
         </div>
     </form>
     <div class="row justify-content-end">
         <label class="col-md-6 text-end" style="margin-bottom: 50px; margin-right: 17%;">¿Aún no tienes cuenta? <a asp-page="SingIn">Regístrate</a></label>
     </div>
     </main>
-    
+
   </body>
 </html>

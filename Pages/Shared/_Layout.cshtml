@@ -1,4 +1,5 @@
 ﻿@using FeiHub.Models;
+@using Microsoft.AspNetCore.Mvc.RazorPages
 @{
     if (SingletonUser.Instance.Token == null) {
         Context.Response.Redirect("/LogIn");
@@ -10,31 +11,74 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - FEIHub_Web</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/FEIHub_Web.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css"/>
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-page="/Index">FEIHub_Web </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
-                        </li>
-                    </ul>
+        @if(SingletonUser.Instance.Rol == "ADMIN")
+        {
+            <nav>
+                <div class="nav-left">
+                    <a class="logo" asp-area="" asp-page="/ManagePosts">
+                        <img src="Resources/Logo.png" class="logo">
+                    </a>
                 </div>
-            </div>
-        </nav>
+
+                <div class="nav-rigth">
+
+                        <form asp-page="/LogIn" asp-page-handler="LogOut" method="post">
+                            <button class="btn btn-primary-icon" type="submit">
+                                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                            </button>
+                        </form>
+                </div>
+            </nav>
+        }
+        else
+        {
+            <nav>
+                <div class="nav-left">
+                    <a class="logo" asp-area="" asp-page="/MainPage">
+                        <img src="Resources/Logo.png" class="logo">
+                    </a>
+                </div>
+
+                <div class="nav-center">
+                    <form asp-page="/SearchResults" asp-page-handler="Search" method="get">
+                        <div class="search-box">
+                            <input type="text" placeholder="Buscar en FeiHub" name="search">
+                            <button class="btn btn-primary-icon"><i class="fa-solid fa-magnifying-glass"></i></button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="nav-rigth">
+                        <form asp-page="/Profile" method="Get">
+                            <input type="hidden" name="username" value=@SingletonUser.Instance.Username></input>
+                            <button class="btn btn-primary-icon" type="submit">
+                                <i class="fa-solid fa-user"></i>
+                            </button>
+                        </form>
+
+                        @* <form asp-page="/Chats">
+                            <button class="btn btn-primary-icon" type="submit">
+                                <i class="fa-solid fa-message"></i>
+                            </button>
+                        </form> *@
+
+                        <form asp-page="/LogIn" asp-page-handler="LogOut" method="post">
+                            <button class="btn btn-primary-icon" type="submit">
+                                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                            </button>
+                        </form>
+                </div>
+            </nav>
+        }
     </header>
     <div class="container">
         <main role="main" class="pb-3">

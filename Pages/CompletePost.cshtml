@@ -1,0 +1,323 @@
+@page
+@model FEIHub_Web.Pages.CompletePostModel;
+@{
+    ViewData["Title"] = "Publicación";
+    Response.ContentType = "text/html; charset=utf-8";
+}
+ <style>
+    textarea {
+    border: none;
+    background-color: transparent;
+    resize: none;
+    overflow: auto;
+    outline: none;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    width: 100%;
+    padding: 0;
+    }
+</style>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
+<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+<br>
+<br>
+<br>
+
+@if(Model.PostInformation!=null){
+    <form asp-page="/CompletePost" method="post">
+        <input type="hidden" name="idThisPost" value="@Model.PostInformation.id"/>
+        <input type="hidden" name="titleThisPost" value="@Model.PostInformation.title" />
+        <div class="post-container">
+            <div class="rigth-align">
+                <p class="target">@Model.PostInformation.target</p>
+            </div>
+
+            <div class="post-row">
+                <div class="user-profile">
+                    @if(Model.PostInformation.AuthorUser.profilePhoto != null){
+                        <img src = @Model.PostInformation.AuthorUser.profilePhoto>
+                    }
+                    <div>
+                        <p>@Model.PostInformation.author</p>
+                        <span>@Model.PostInformation.dateOfPublish.ToShortDateString()</span>
+                    </div>
+                </div>
+
+                <div class="dropdown">
+                    <button
+                        class="btn btn-secondary dropdown-toggle"
+                        type="button" id="managePost" style="display: @Model.postOwner;"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <button class="btn" type="submit" asp-page-handler="EditPost">Editar</button>
+                        </li>
+                        <li>
+                            <button class="btn" onclick="showModalDelete()" type="button">
+                                Eliminar
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="modal" tabindex="-1" id="modalDelete">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Eliminar publicación</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close" onclick="closeModalDelete()"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>¿Estás seguro que deseas eliminar la publicación?</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary"
+                            data-bs-dismiss="modal" onclick="closeModalDelete()">Cancelar</button>
+                            <button type="submit" class="btn btn-primary" asp-page-handler="DeletePost">Eliminar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p class="post-title">@Model.PostInformation.title</p>
+            <p class="post-text">@Model.PostInformation.body</p>
+            <div class="post-icons" style="display: flex; flex-wrap: wrap;">
+                @if(Model.PostInformation.photos != null){
+                    for (int i = 0; i < Model.PostInformation.photos.Count(); i += 3)
+                    {
+                        <div class="image-group" style="display: flex; justify-content: space-between;">
+                            @for (int j = i; j < i + 3 && j < Model.PostInformation.photos.Count(); j++)
+                            {
+                                var photoUrl = Model.PostInformation.photos.ElementAt(j).url;
+                                <a href="@photoUrl" style="display: inline-block; width: 33.33%; height: 100%; margin=10px;">
+                                    <img src="@photoUrl" class="post-img" style="width: 100%; height: 100%;">
+                                </a>
+                            }
+                        </div>
+                    }
+                }
+            </div>
+            <div class="post-icons">
+                <div class="activity-icons">
+                    <div style="margin-right: 0px;">
+                        <button class="btn btn-primary-likes" type="submit" asp-page-handler="Like">
+                            <i class="fa-regular fa-thumbs-up">&nbsp;@Model.PostInformation.likes</i>
+                        </button>
+                        <button class="btn btn-primary-likes" type="submit" asp-page-handler="Dislike">
+                            <i class="fa-regular fa-thumbs-down">&nbsp;@Model.PostInformation.dislikes</i>
+                        </button>
+                        <button class="btn btn-primary-report" onclick="showModalReport()" style="margin-right: 0px;" type="button">
+                            <i class="fa-solid fa-flag"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+             @if (Model.ErrorMessage != null)
+            {
+                <div id="alertMessage" class="alert alert-danger alert-fade" role="alert">@Model.ErrorMessage</div>
+                <script>
+                    setTimeout(function() {
+                        var alertMessage = document.getElementById("alertMessage");
+                        alertMessage.style.display = "none";
+                    }, 2000);
+                </script>
+            }
+            @if (Model.SuccessMessage != null){
+                <div id="successMessage" class="alert alert-success mt-3 alert-fade">@Model.SuccessMessage</div>
+                <script>
+                    setTimeout(function() {
+                        var alertMessage = document.getElementById("successMessage");
+                        alertMessage.style.display = "none";
+                    }, 2000);
+                </script>
+            }
+            <!-- #region NEW COMMENT-->
+            <div class="mb-3" style="display: @Model.visibilityComment;">
+                <label for="body" class="form-label">Comentario</label>
+                <input type="hidden" name="idPost" value="@Model.PostInformation.id"/>
+                <input type="hidden" name="titlePost" value="@Model.PostInformation.title" />
+                <textarea class="form-control" id="comment" rows="3" name="comment">@Model.thisComment</textarea>
+                <br>
+                <button class="btn btn-primary" type="submit" asp-page-handler="Comment">Comentar</button>
+            </div>
+
+
+
+            @if (Model.CommentMessage != null)
+            {
+                <div id="commentMessage" class="alert alert-danger alert-fade" role="alert">@Model.CommentMessage</div>
+                <script>
+                    setTimeout(function() {
+                        var alertMessage = document.getElementById("commentMessage");
+                        alertMessage.style.display = "none";
+                    }, 2000);
+                </script>
+            }
+            <!-- #endregion -->
+
+            <!-- #region COMMENTS-->
+
+                @if(Model.PostInformation.comments != null)
+                {
+                    @foreach(var comment in Model.PostInformation.comments)
+                    {
+                        <div class="comment-container">
+                            <div class="post-row">
+                                <div class="user-profile">
+                                    @if(comment.AuthorUser != null && comment.AuthorUser.profilePhoto != null){
+                                        <img src = @comment.AuthorUser.profilePhoto>
+                                    }
+                                    <div>
+                                        <p style="display: none;">@comment.author</p>
+                                        <span>@comment.dateOfComment.ToShortDateString()</span>
+                                    </div>
+                                </div>
+                                <div class="dropdown">
+                                    <button
+                                        class="btn btn-secondary dropdown-toggle"
+                                        type="button" id="managePost" style="display: @comment.commentOwner;"
+                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <input type="hidden" name="idComment" value="@comment.commentId"/>
+                                            <input type="hidden" name="idPost" value="@Model.PostInformation.id"/>
+                                            <button class="btn" type="button" onclick="showEditComment('@comment.commentId')">Editar</button>
+                                        </li>
+                                        <li>
+                                            <button class="btn" onclick="showModalDeleteComment()" type="button">
+                                                Eliminar
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <p class="post-text" id="paragraphComment_@comment.commentId" style="display: block;">@comment.body</p>
+                            <textarea class="form-control" rows="5" id="textareaComment_@comment.commentId" style="display: none;"
+                            name="commentEdited">@comment.body</textarea>
+                            <br>
+                            <div class="post-row" style="justify-content: space-between;">
+                                <input type="hidden" name="idComment" value="@comment.commentId"/>
+                                <input type="hidden" name="idPost" value="@Model.PostInformation.id"/>
+                                <button class="btn btn-primary" type="submit" asp-page-handler="EditComment" id="buttonSaveChanges_@comment.commentId" style="display: none;">
+                                    Guardar cambios
+                                </button>
+                                <button class="btn btn-danger" type="button" onclick="closeEditComment('@comment.commentId')" id="buttonCancel_@comment.commentId" style="display: none;">Cancelar</button>
+                            </div>
+                            <script>
+                                function showEditComment(commentId){
+                                    var commentInput = document.getElementById("textareaComment_" + commentId);
+                                    var commentButton = document.getElementById("buttonSaveChanges_" + commentId);
+                                    var commentCancel = document.getElementById("buttonCancel_" + commentId);
+                                    var paragraph = document.getElementById("paragraphComment_" + commentId);
+                                    commentInput.style.display = "block";
+                                    commentButton.style.display = "block";
+                                    commentCancel.style.display = "block";
+                                    paragraph.style.display = "none";
+                                }
+                                function closeEditComment(commentId){
+                                    var commentInput = document.getElementById("textareaComment_" + commentId);
+                                    var commentButton = document.getElementById("buttonSaveChanges_" + commentId);
+                                    var commentCancel = document.getElementById("buttonCancel_" + commentId);
+                                    var paragraph = document.getElementById("paragraphComment_" + commentId);
+                                    commentInput.style.display = "none";
+                                    commentButton.style.display = "none";
+                                    commentCancel.style.display = "none";
+                                    paragraph.style.display = "block";
+                                }
+                            </script>
+
+                        </div>
+                        <div class="modal" tabindex="-1" id="modalDeleteComment">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Eliminar comentario</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close" onclick="closeModalDeleteComment()"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>¿Estás seguro que deseas eliminar el comentario?</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal" onclick="closeModalDeleteComment()">Cancelar</button>
+                                        <input type="hidden" name="idComment" value="@comment.commentId"/>
+                                        <input type="hidden" name="idPost" value="@Model.PostInformation.id"/>
+                                        <button type="submit"  asp-page-handler="DeleteComment" class="btn btn-primary">Eliminar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    }
+
+                }
+
+
+            <!-- #endregion -->
+
+
+        </div>
+
+    <div class="modal" tabindex="-1" id="modalReport">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Reportar publicación</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                    aria-label="Close" onclick="closeModalReport()"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Nos preocupamos por mantener un ambiente de respeto y comodidad para toda la comunidad.
+                        Te agradecemos por preocuparte por ti y los demás usuarios reportando publicaciones que infrigen las reglas.<br>
+                        ¿Estás seguro que deseas reportar la publicación?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary"
+                    data-bs-dismiss="modal" onclick="closeModalReport()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" asp-page-handler="Report">Reportar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    </form>
+    }
+
+
+    <script>
+    function showModalReport() {
+    var modal = document.getElementById("modalReport");
+    modal.style.display = "block";
+    }
+
+    function closeModalReport() {
+    var modal = document.getElementById("modalReport");
+    modal.style.display = "none";
+    }
+
+    function showModalDelete() {
+    var modal = document.getElementById("modalDelete");
+    modal.style.display = "block";
+    }
+
+    function closeModalDelete() {
+    var modal = document.getElementById("modalDelete");
+    modal.style.display = "none";
+    }
+    function showModalDeleteComment() {
+    var modal = document.getElementById("modalDeleteComment");
+    modal.style.display = "block";
+    }
+    function closeModalDeleteComment() {
+    var modal = document.getElementById("modalDeleteComment");
+    modal.style.display = "none";
+    }
+</script>

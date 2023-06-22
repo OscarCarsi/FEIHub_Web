@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 public class S3Service
 {
-    private const string BucketName = "feihub-admin-photos-bucket"; 
+    private const string BucketName = "feihub-admin-photos-bucket";
 
     private readonly AmazonS3Client amazonS3Client;
 
@@ -24,24 +24,35 @@ public class S3Service
         var credentials = new Amazon.Runtime.BasicAWSCredentials(accessKey, secretKey);
         var config = new AmazonS3Config
         {
-            RegionEndpoint = RegionEndpoint.USEast2 
+            RegionEndpoint = RegionEndpoint.USEast2
         };
 
         amazonS3Client = new AmazonS3Client(credentials, config);
     }
 
-    public async Task<bool> UploadImage(string imagePath, string customName)
+    public async Task<bool> UploadImage(string imagePath, string customName, IFormFile file)
     {
         try
         {
-            var putRequest = new PutObjectRequest
+            using (var fileStream = file.OpenReadStream())
             {
-                BucketName = BucketName,
-                Key = customName,
-                FilePath = imagePath
-            };
+                var putRequest = new PutObjectRequest
+                {
+                    BucketName = BucketName,
+                    Key = customName,
+                    //FilePath = imagePath
+                    InputStream = fileStream
+                };
+                await amazonS3Client.PutObjectAsync(putRequest);
+            }
 
-            await amazonS3Client.PutObjectAsync(putRequest);
+
+            // var putRequest = new PutObjectRequest
+            // {
+            //     BucketName = BucketName,
+            //     Key = customName,
+            //     FilePath = imagePath
+            // };
 
             return true;
         }
@@ -84,11 +95,11 @@ public class S3Service
 
             await amazonS3Client.PutObjectAsync(putRequest);
 
-            return true; 
+            return true;
         }
-        catch 
+        catch
         {
-            return false; 
+            return false;
         }
     }
 }

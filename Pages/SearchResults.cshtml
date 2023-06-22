@@ -1,0 +1,55 @@
+@page
+@model FEIHub_Web.Pages.SearchResultsModel;
+@{
+    ViewData["Title"] = "Resultados de búsqueda";
+}
+
+<style>
+    .wrap-panel {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: left;
+    padding: 30px;
+    border-radius: 20px;
+  }
+</style>
+
+<br>
+<br><br><br>
+<h2>
+    Resultados
+</h2>
+
+@if(!String.IsNullOrWhiteSpace(Model.StringToSearch)){
+    <h5>
+        Mostrando resultados para "@Model.StringToSearch"
+    </h5>
+    <div class="wrap-panel" style="background-color: white;">
+        @if(Model.usersObtained != null && Model.usersObtained.Count > 0)
+        {
+            foreach (var user in Model.usersObtained)
+            {
+                <form asp-page="/Profile" method="get">
+                    <input type="hidden" name="username" value="@user.username"></input>
+                    <button class="btn" type="submit">
+                        <div class="user-profile" style="border: 1px solid #61676a; border-radius: 6px; padding: 5px;">
+                            <img src = @user.profilePhoto>
+                            <div>
+                                <p>@user.username</p>
+                                <span>@user.CompleteName()</span>
+                            </div>
+                        </div>
+                    </button>
+                </form>
+            }
+        }
+        else
+        {
+            <label>No se encontraron coincidencias</label>
+        }
+    </div>
+}
+else
+{
+    <label>Escribe algo para empezar a buscar</label>
+}

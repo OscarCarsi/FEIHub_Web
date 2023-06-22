@@ -1,0 +1,368 @@
+@page
+@model FEIHub_Web.Pages.ProfileModel;
+@{
+    ViewData["Title"] = "Perfil";
+}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
+<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+<br>
+<br>
+<br>
+<style>
+  .stack-panel-vertical {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    @* border: 1px solid black; *@
+    padding: 10px;
+    flex-grow: 1;
+  }
+  .stack-panel-vertical-align-top {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    @* border: 1px solid black; *@
+    padding: 10px;
+  }
+
+.stack-panel-horizontal {
+    display: flex;
+    flex-direction: row;
+    @* border: 1px solid rgb(181, 2, 2); *@
+    padding: 10px;
+    @* justify-content: center; *@
+    justify-content: left;
+}
+.buttons-margin {
+    margin: 9px;
+    border: 0px;
+}
+
+.item {
+background-color: lightgray;
+padding: 10px;
+margin: auto;
+}
+.img-profile img{
+    width: 245px;
+    height: 245px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+.wrap-panel {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: left;
+    padding: 30px;
+    border-radius: 20px;
+  }
+
+
+</style>
+
+<div class="stack-panel-vertical">
+    <div class="stack-panel-horizontal">
+        <div class="img-profile">
+            <img src="@Model.thisUser.profilePhoto" class="post-img"/>
+        </div>
+        <div class="stack-panel-vertical">
+            <h3>@Model.userRol</h3>
+            <h4>@Model.thisUser.username</h4>
+            <label>@Model.thisUser.CompleteName()</label>
+            <label style="display: @Model.visibilityAcademic;">
+                @Model.thisUser.schoolId
+            </label>
+            <label style="display: @Model.visibilityAcademic;">@Model.thisUser.educationalProgram</label>
+            <div class="stack-panel-horizontal">
+                <div class="activity-icons">
+                    <div style="margin-right: 0px;">
+                        @* <button class="btn btn-primary-likes" style="display: @Model.visibilityUser;" type="submit">
+                            <i class="fa-solid fa-message"></i>
+                        </button> *@
+
+                        <form asp-page="/Profile" asp-page-handler="Follow" method="post">
+                            <input type="hidden" name="username" value="@Model.thisUser.username">
+                                <button class="btn btn-primary-likes" style="display: @Model.visibilityFollow;" type="submit" id="follow">
+                                    <i class="fa-solid fa-user-plus"></i>
+                                </button>
+                        </form>
+
+                        <form asp-page="/Profile" asp-page-handler="Unfollow" method="post">
+                            <input type="hidden" name="username" value="@Model.thisUser.username">
+                            <button class="btn btn-primary-likes" style="display: @Model.visibilityUnfollow;" type="submit" id="unfollow">
+                                <i class="fa-solid fa-user-minus"></i>
+                            </button>
+                        </form>
+
+                        <form asp-page="/EditProfile" method="get">
+                            <button class="btn btn-primary-likes" style="display: @Model.visibilityEditProfile;" type="submit">
+                                <i class="fa-solid fa-user-pen"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="stack-panel-horizontal" >
+        <button class="btn btn-light"
+            style="margin: 9px;
+            background-color: LightSteelBlue;
+            border: 0px;" type="button" onclick="postChoosen()">
+            Publicaciones
+        </button>
+        <button class="btn btn-light" type="button" onclick="followersChoosen()"
+        style="margin: 9px; background-color: LightSkyBlue; border: 0px;" >Seguidores</button>
+        <button class="btn btn-light" type="button" onclick="followingChoosen()"
+        style="margin: 9px; background-color: LightBlue; border: 0px;">Seguidos</button>
+    </div>
+    <!-- #region FOLLOWERS-->
+    <div id="followers" style="display: @Model.visibilityFollowers;">
+        <h3>Seguidores</h3>
+        <div class="wrap-panel" style="background-color: white;">
+            @if (Model.followers != null)
+            {
+                if (Model.followers.Count() == 0)
+                {
+                    <label style=" color:black;  height: 35px; width: 500px;">
+                                    El usuario no tiene seguidores</label>
+                }
+                foreach(var follower in Model.followers)
+                {
+                    <form asp-page="/Profile" method="get">
+                        <input type="hidden" name="username" value="@follower.username"></input>
+                        <button class="btn" type="submit">
+                            <div class="user-profile" style="border: 1px solid #61676a; border-radius: 6px; padding: 5px;">
+                                <img src = @follower.profilePhoto>
+                                <div>
+                                    <p>@follower.username</p>
+                                    <span>@follower.CompleteName()</span>
+                                </div>
+                            </div>
+                        </button>
+                    </form>
+                }
+            }
+        </div>
+    </div>
+    <!-- #endregion -->
+    <!-- #region FOLLOWING-->
+    <div id="following" style="display: @Model.visibilityFollowing;">
+        <h3>Siguiendo</h3>
+        <div class="wrap-panel" style="background-color: white;">
+            @if (Model.following != null)
+            {
+                if (Model.following.Count() == 0)
+            {
+                <label style=" color:black;  height: 35px; width: 500px;">
+                                El usuario no sigue a ningún usuario</label>
+            }
+                foreach (var following in Model.following)
+                {
+
+                    <form asp-page="/Profile" method="get">
+                        <input type="hidden" name="username" value="@following.username"></input>
+                        <button class="btn" type="submit">
+                            <div class="user-profile" style="border: 1px solid #61676a; border-radius: 6px; padding: 5px;">
+                                <img src = @following.profilePhoto>
+                                <div>
+                                    <p>@following.username</p>
+                                    <span>@following.CompleteName()</span>
+                                </div>
+                            </div>
+                        </button>
+                    </form>
+                }
+            }
+        </div>
+    </div>
+    <!-- #endregion -->
+    <!-- #region POSTS-->
+    <div id="postsContainer" class="main-content" style="display: @Model.visibilityPosts;">
+        <h3>Publicaciones</h3>
+        @if(Model.posts!=null){
+            if (Model.posts.Count() == 0)
+            {
+                <label style=" color:black;  height: 35px; width: 240px;">
+                                El usuario no tiene publicaciones</label>
+            }
+            foreach(var post in Model.posts){
+                <form method="post" asp-page="/Profile">
+                    <input type="hidden" name="idPost" value="@post.id"/>
+                    <input type="hidden" name="titlePost" value="@post.title" />
+                    <input type="hidden" name="username" value="@post.author"/>
+                    <div class="post-container">
+                        <div class="rigth-align">
+                            <p class="target">@post.target</p>
+                        </div>
+
+                        <div class="post-row">
+                            <div class="user-profile">
+                                @if(post.AuthorUser.profilePhoto != null){
+                                    <img src = @post.AuthorUser.profilePhoto>
+                                }
+                                <div>
+                                    <p>@post.author</p>
+                                    <span>@post.dateOfPublish.ToShortDateString()</span>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <p class="post-title">@post.title</p>
+                        <p class="post-text">@post.body</p>
+                        <div class="post-icons">
+                            @if(post.photos != null){
+                                for (int i = 0; i<3 && i < post.photos.Count(); i++){
+                                    <img src=@post.photos.ElementAt(i).url class="post-img">
+                                }
+                            }
+                        </div>
+                            @if(post.photos != null && post.photos.Count() > 3){
+                                <small><small><label style="background: rgb(108, 181, 196); color:black;">
+                                    La publicación contiene más imágenes, ábrela para verlas</label></small></small>
+                            }
+                            <button class="btn " type="submit" asp-page-handler="CompletePost" style="margin: 1%; color: rgb(14, 14, 91); white-space: nowrap;" >
+                                <small>Ver publicación completa</small>
+                            </button>
+
+
+                        <div class="post-icons">
+                            <div class="activity-icons">
+                                <div style="margin-right: 0px;">
+                                    <button class="btn btn-primary-likes" type="submit" asp-page-handler="Like">
+                                        <i class="fa-regular fa-thumbs-up">&nbsp;@post.likes</i>
+                                    </button>
+                                    <button class="btn btn-primary-likes" type="submit" asp-page-handler="Dislike">
+                                        <i class="fa-regular fa-thumbs-down">&nbsp;@post.dislikes</i>
+                                    </button>
+                                    <input type="hidden" name="idPost" value="@post.id"/>
+                                    <input type="hidden" name="titlePost" value="@post.title" />
+                                    <button class="btn btn-primary-comment" type="submit" asp-page-handler="CompletePost">
+                                        <i class="fa-regular fa-comment">&nbsp;@post.comments?.Count()</i>
+                                    </button>
+                                    <button class="btn btn-primary-report" onclick="showModalReport()" style="margin-right: 0px;" type="button">
+                                        <i class="fa-solid fa-flag"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal" tabindex="-1" id="modalReport">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Reportar publicación</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close" onclick="closeModalReport()"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>Nos preocupamos por mantener un ambiente de respeto y comodidad para toda la comunidad.
+                                        Te agradecemos por preocuparte por ti y los demás usuarios reportando publicaciones que infrigen las reglas.<br>
+                                        ¿Estás seguro que deseas reportar la publicación?</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                    data-bs-dismiss="modal" onclick="closeModalReport()">Cancelar</button>
+                                    <button type="submit" class="btn btn-primary" asp-page-handler="Report">Reportar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @if (Model.SuccessMessage != null){
+                        <div id="successMessage" class="alert alert-success mt-3 alert-fade">@Model.SuccessMessage</div>
+                        <script>
+                            var alertElement = document.getElementById("successMessage");
+                            alertElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            alertElement.focus();
+                            setTimeout(function() {
+                                var alertMessage = document.getElementById("successMessage");
+                                alertMessage.style.display = "none";
+                            }, 2000);
+                        </script>
+                    }
+                    @if (Model.ErrorMessage != null)
+                    {
+                        <div id="alertMessage" class="alert alert-danger alert-fade" role="alert">@Model.ErrorMessage</div>
+                        <script>
+                            var alertElement = document.getElementById("alertMessage");
+                            alertElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            alertElement.focus();
+                            setTimeout(function() {
+                                var alertMessage = document.getElementById("alertMessage");
+                                alertMessage.style.display = "none";
+                            }, 2000);
+                        </script>
+                    }
+                    @if (Model.WarningMessage != null){
+                        <div id="warningMessage" class="alert alert-warning mt-3 alert-fade">@Model.WarningMessage</div>
+                        <script>
+                            var alertElement = document.getElementById("warningMessage");
+                            alertElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            alertElement.focus();
+                            setTimeout(function() {
+                                var alertMessage = document.getElementById("warningMessage");
+                                alertMessage.style.display = "none";
+                            }, 2000);
+                        </script>
+                    }
+                </form>
+            }
+        }
+    </div>
+    <!-- #region -->
+<div>
+
+<script>
+    function showModalReport() {
+    var modal = document.getElementById("modalReport");
+    modal.style.display = "block";
+    }
+
+    function closeModalReport() {
+    var modal = document.getElementById("modalReport");
+    modal.style.display = "none";
+    }
+
+    function showModalDelete() {
+    var modal = document.getElementById("modalDelete");
+    modal.style.display = "block";
+    }
+
+    function closeModalDelete() {
+    var modal = document.getElementById("modalDelete");
+    modal.style.display = "none";
+    }
+    function closeModalDeleteComment() {
+    var modal = document.getElementById("modalDeleteComment");
+    modal.style.display = "none";
+    }
+    function postChoosen() {
+        var divFollowers = document.getElementById("followers");
+        var divFollowing = document.getElementById("following");
+        var divPosts = document.getElementById("postsContainer");
+        divFollowers.style.display = "none";
+        divFollowing.style.display = "none";
+        divPosts.style.display = "block";
+    }
+    function followersChoosen() {
+        var divFollowers = document.getElementById("followers");
+        var divFollowing = document.getElementById("following");
+        var divPosts = document.getElementById("postsContainer");
+        divFollowers.style.display = "block";
+        divFollowing.style.display = "none";
+        divPosts.style.display = "none";
+    }
+    function followingChoosen() {
+        var divFollowers = document.getElementById("followers");
+        var divFollowing = document.getElementById("following");
+        var divPosts = document.getElementById("postsContainer");
+        divFollowers.style.display = "none";
+        divFollowing.style.display = "block";
+        divPosts.style.display = "none";
+    }
+</script>

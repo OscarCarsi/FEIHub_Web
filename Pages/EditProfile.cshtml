@@ -1,0 +1,62 @@
+@page
+@model FEIHub_Web.Pages.EditProfileModel;
+@{
+    ViewData["Title"] = "Editar perfil";
+}
+
+<br>
+<div class="containerPage">
+    <h3>Editar perfil</h3>
+<br>
+@if(Model.thisUser != null && !String.IsNullOrEmpty(Model.thisUser.username)){
+    <form  method="POST" asp-page="/EditProfile" enctype="multipart/form-data">
+        <div class="write-post-container">
+            <div class="post-input-container">
+                <div class="mb-3">
+                    <label for="name" class="form-label">Nombre</label>
+                    <input type="text" class="form-control" id="name" name="name" value="@Model.thisUser.name">
+                </div>
+                <div class="mb-3">
+                    <label for="paternalSurname" class="form-label">Apellido paterno</label>
+                    <input class="form-control" type="text" id="paternalSurname" name="paternalSurname" value="@Model.thisUser.paternalSurname">
+                </div>
+                <div class="mb-3">
+                    <label for="maternalSurname" class="form-label">Apellido paterno</label>
+                    <input class="form-control" type="text" id="maternalSurname" name="maternalSurname" value="@Model.thisUser.maternalSurname">
+                </div>
+                <div class="mb-3">
+                        <label for="file" class="form-label">Cambiar foto de perfil</label>
+                        <input class="form-control" type="file" asp-for="file" name="file"
+                         accept=".jpg, .jpeg, .png">
+                </div>
+                <div class="add-post-links">
+
+                        <button type="submit" class="btn btn-primary" asp-page-handler="Edit"> Guardar cambios</button>
+                        <button class="btn btn-secondary" type="submit"  asp-page-handler="Cancel">Cancelar</button>
+
+                </div>
+            </div>
+        </div>
+
+    @if (Model.ErrorMessage != null)
+    {
+        <div id="alertMessage" class="alert alert-danger alert-fade" role="alert">@Model.ErrorMessage</div>
+        <script>
+            setTimeout(function() {
+                var alertMessage = document.getElementById("alertMessage");
+                alertMessage.style.display = "none";
+            }, 2000);
+        </script>
+    }
+    @if (Model.SuccessMessage != null){
+        <div id="successMessage" class="alert alert-success mt-3 alert-fade">@Model.SuccessMessage</div>
+        <script>
+            setTimeout(function() {
+                var alertMessage = document.getElementById("successMessage");
+                alertMessage.style.display = "none";
+            }, 2000);
+        </script>
+    }
+    </form>
+}
+</div>

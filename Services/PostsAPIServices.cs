@@ -335,7 +335,7 @@ namespace FeiHub.Services
                 return postList;
             }
         }
-        
+
         public async Task<HttpResponseMessage> DeletePost(Posts postToDelete)
         {
             try
@@ -446,7 +446,7 @@ namespace FeiHub.Services
                 string jsonResponse = await response.Content.ReadAsStringAsync();
                 if (response.IsSuccessStatusCode)
                 {
-                    JObject jsonObject = JObject.Parse(jsonResponse); 
+                    JObject jsonObject = JObject.Parse(jsonResponse);
                     JArray chatFound = jsonObject.GetValue("chat") as JArray;
                     if (chatFound != null)
                     {
@@ -557,7 +557,7 @@ namespace FeiHub.Services
             }
             return chat;
         }
-                    
+
         public async Task<Posts> DeleteComment(string commentId, string idPost)
         {
             Posts post = new Posts();
@@ -815,5 +815,69 @@ namespace FeiHub.Services
             }
 
         }
+
+        public async Task<Posts> GetPostByIdAndTitle(string idPost, string title)
+        {
+            Posts post = new Posts();
+            try
+            {
+                string apiUrl = "/posts/postIdTitle";
+                var requestData = new
+                {
+                    id = idPost,
+                    title = title
+                };
+                string jsonRequest = JsonConvert.SerializeObject(requestData);
+                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, httpClient.BaseAddress + apiUrl);
+                request.Headers.Add("token", SingletonUser.Instance.Token);
+                request.Content = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
+                HttpResponseMessage response = await httpClient.SendAsync(request);
+                string jsonResponse = await response.Content.ReadAsStringAsync();
+
+                if (response.IsSuccessStatusCode)
+                {
+                    JArray jsonArray = JArray.Parse(jsonResponse);
+                    if (jsonArray != null && jsonArray[0] != null)
+                    {
+                        JToken jsonToken = jsonArray[0];
+                        JObject jsonObject = (JObject)jsonToken;
+                        post.id = jsonObject.GetValue("id").ToString();
+                        post.title = jsonObject.GetValue("title").ToString();
+                        post.author = jsonObject.GetValue("author").ToString();
+                        post.body = jsonObject.GetValue("body").ToString();
+                        post.dateOfPublish = DateTime.Parse(jsonObject.GetValue("dateOfPublish").ToString());
+                        JArray photosArray = jsonObject.GetValue("photos") as JArray;
+                        if (photosArray != null)
+                        {
+                            post.photos = photosArray.ToObject<Photo[]>();
+                        }
+                        post.target = jsonObject.GetValue("target").ToString();
+                        post.likes = int.Parse(jsonObject.GetValue("likes").ToString());
+                        post.dislikes = int.Parse(jsonObject.GetValue("dislikes").ToString());
+                        JArray commentsArray = jsonObject.GetValue("comments") as JArray;
+                        if (commentsArray != null)
+                        {
+                            post.comments = commentsArray.ToObject<Comment[]>();
+                        }
+                    }
+                    post.StatusCode = response.StatusCode;
+
+                }
+                if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                {
+                    post.StatusCode = System.Net.HttpStatusCode.Unauthorized;
+                }
+                return post;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+                Console.WriteLine(ex.Message);
+                Posts errorPost = new Posts();
+                errorPost.StatusCode = System.Net.HttpStatusCode.InternalServerError;
+                return errorPost;
+            }
+        }
+
     }
 }

@@ -18,6 +18,9 @@ namespace FeiHub.Models
         public string? educationalProgram { get; set; }
         public string? profilePhoto { get; set;  }
         public HttpStatusCode StatusCode { get; set; }
+        public string CompleteName(){
+            return name + " " + paternalSurname + " " + maternalSurname;
+        }
     }
 
 }

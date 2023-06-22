@@ -92,7 +92,7 @@ namespace FeiHub.Services
                 string jsonResponse = await response.Content.ReadAsStringAsync();
                 userObtained = JsonConvert.DeserializeObject<User>(jsonResponse);
                 return userObtained;
-            
+
         }
         public async Task<string> GetExistingUser(string email)
         {
@@ -111,7 +111,7 @@ namespace FeiHub.Services
             {
                 return null;
             }
-            
+
         }
         public async Task<List<User>> GetListUsersFollowing(string username)
         {
@@ -144,7 +144,7 @@ namespace FeiHub.Services
                         }
                     }
 
-                    
+
                 }
                 if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized) {
                     User user = new User();

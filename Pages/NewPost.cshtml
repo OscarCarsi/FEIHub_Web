@@ -1,0 +1,61 @@
+@page
+@model FEIHub_Web.Pages.NewPostModel;
+@{
+    ViewData["Title"] = "Nueva publicación";
+}
+
+<br>
+<div class="containerPage">
+    <h3>Crear publicación</h3>
+<br>
+    <form  method="POST" asp-page-handler="NewPost" asp-page="./NewPost" enctype="multipart/form-data">
+    <div class="write-post-container">
+        <div class="post-input-container">
+            <div class="mb-3">
+                <label for="title" class="form-label">Título</label>
+                <input type="text" class="form-control" name="title" id="title" value="@Model.newPost.title"></input>
+            </div>
+            <div class="mb-3">
+                <label for="body" class="form-label">Descripción</label>
+                <textarea class="form-control" id="body" rows="3" name="body">@Model.newPost.body</textarea>
+            </div>
+            <div class="add-post-links">
+                    <div class="post-components">
+                        <label>Etiqueta: </label>
+                        <select class="form-select" aria-label="Etiqueta:" asp-for="target">
+                            <option selected value="none"></option>
+                            <option value="EVERYBODY">Todos</option>
+                            <option value="STUDENT">Estudiantes</option>
+                            <option value="ACADEMIC">Académicos</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <input class="form-control" type="file" id="formFileMultiple" asp-for="files"
+                        multiple accept=".jpg, .jpeg, .png">
+                    </div>
+                    <button type="submit" class="btn btn-primary"> Publicar</button>
+                    <a class="btn btn-secondary" asp-page="/MainPage">Cancelar</a>
+            </div>
+             @if (Model.ErrorMessage != null)
+                    {
+                        <div id="alertMessage" class="alert alert-danger alert-fade" role="alert">@Model.ErrorMessage</div>
+                        <script>
+                            setTimeout(function() {
+                                var alertMessage = document.getElementById("alertMessage");
+                                alertMessage.style.display = "none";
+                            }, 2000);
+                        </script>
+                    }
+            @if (Model.SuccessMessage != null){
+                <div id="successMessage" class="alert alert-success mt-3 alert-fade">@Model.SuccessMessage</div>
+                <script>
+                    setTimeout(function() {
+                        var alertMessage = document.getElementById("successMessage");
+                        alertMessage.style.display = "none";
+                    }, 2000);
+                </script>
+            }
+        </div>
+    </div>
+    </form>
+</div>
